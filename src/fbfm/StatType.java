@@ -1,7 +1,7 @@
 package fbfm;
 
 /** 
- *  StatType is an enum type that contains the type of that stat - feature or property
+ *  StatType is an {@code Enum} type that contains the type of that {@code Stat} - feature or property
  * 
  *  @author Yaniv Elimor
  */

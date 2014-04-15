@@ -1,7 +1,7 @@
 package fbfm;
 
 /** 
- *  This annotation is used to require a Stat parameters.
+ *  This annotation is used to require a {@code Stat} parameters.
  * 
  * @author Yaniv Elimor
  */

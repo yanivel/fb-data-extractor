@@ -8,19 +8,19 @@ import java.lang.reflect.Method;
 
 
 /** 
- *  The Stat class is an abstract class that should be base class for all Stat derived classes that extract data from facebook.
+ *  The {@code Stat} class is an abstract class that should be base class for all {@code Stat} derived classes that extract data from facebook.
  *  Derive this class and implement calculateStat for each feature/property.
  */
 public abstract class Stat {
     
   /** 
-   *  Performs calculation of the Stat in facebook
+   *  Performs calculation of the {@code Stat} in facebook
    *  
    *  @param facebookClient facebook client instance
    *  @param parameters Zero or more Parameters for the calculations
    *  @throws StatException 
    *  @throws BadParameterException
-   * @return StatResponse the stat response of the calculation
+   * @return StatResponse the {@code Stat} response of the calculation
    */
   public StatResponse performCalculation(FacebookClient facebookClient, Parameter... parameters ) throws StatException,
                                                                                                     BadParameterException{
@@ -85,7 +85,7 @@ public abstract class Stat {
    * 
    *  @param facebookClient facebook client instance
    *  @param parameters Zero or more Parameters for the calculations
-   * @return StatResponse the stat response of the calculation
+   * @return StatResponse the {@code Stat} response of the calculation
    */
   protected abstract StatResponse calculateStat(FacebookClient facebookClient, Parameter... parameters );
 
