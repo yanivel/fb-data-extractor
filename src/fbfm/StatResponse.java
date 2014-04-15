@@ -14,6 +14,14 @@ public class StatResponse {
   /**
    * StatResponse constructor
    * 
+   */
+  StatResponse()
+  {
+  }
+  
+  /**
+   * StatResponse constructor
+   * 
    * @param name name of the stat
    * @param description description of the stat
    */
@@ -21,6 +29,42 @@ public class StatResponse {
   {
       this.name = name;
       this.description = description;
+  }
+  
+  /**
+   * Set the StatResponse name
+   * 
+   * @param name
+   */
+  public void setName(String name) {
+      this.name = name;
+  }
+  
+  /**
+   * return the name of the StatResponse
+   * 
+   * @return String
+   */
+  public String getName() {
+      return this.name;
+  }
+  
+  /**
+   * Set the StatResponse description
+   * 
+   * @param description
+   */
+  public void setDescription(String description) {
+      this.description = description;
+  }
+  
+  /**
+   * return the description of the StatResponse
+   * 
+   * @return String
+   */
+  public String getDescription() {
+      return this.description;
   }
   
   /**
