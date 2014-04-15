@@ -2,7 +2,10 @@ package fbfm;
 
 
 import com.restfb.FacebookClient;
-import java.util.HashMap;
+import com.restfb.Parameter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
 
 /** 
  *  The Stat class is an abstract class that should be base class for all Stat derived classes that extract data from facebook.
@@ -14,22 +17,26 @@ public abstract class Stat {
    *  Performs calculation of the Stat in facebook
    *  
    *  @param facebookClient facebook client instance
-   *  @param parameters Hashtable of strings, parameters for the calculations
+   *  @param parameters Zero or more Parameters for the calculations
    *  @throws StatException 
+   *  @throws BadParameterException
    * @return StatResponse the stat response of the calculation
    */
-  public StatResponse performCalculation(FacebookClient facebookClient, HashMap<String, String> parameters ) throws StatException {
+  public StatResponse performCalculation(FacebookClient facebookClient, Parameter... parameters ) throws StatException,
+                                                                                                    BadParameterException{
       
       StatResponse response = this.calculateStat(facebookClient, parameters);
-
-      // set response name and description from annotation
+      
       StatInfo statInfo = this.getClass().getAnnotation(StatInfo.class);
       String name = statInfo.name();
       String description = statInfo.description();
       
+      // checks
       if (name == null || description == null || name.isEmpty())
           throw new StatException(this.getClass()+ "'s StatInfo annotation is invalid.");
-              
+
+      this.checkParameters(parameters);
+      
       response.setName(statInfo.name());
       response.setDescription(statInfo.description());
       
@@ -37,13 +44,49 @@ public abstract class Stat {
   }
 
   /** 
+   *  Check that the parameters received are the required parameters by calculateState method
+   * @param parameters
+   * @throws BadParameterException
+   */
+  protected void checkParameters(Parameter... parameters) throws BadParameterException
+  {
+      Class c = this.getClass();
+      
+      Method m;
+      try {
+         m = c.getMethod("calculateState");
+      } catch (NoSuchMethodException exc) {
+          throw new BadParameterException(exc);
+      }
+      
+      if (m.isAnnotationPresent(StatParameters.class)) {
+
+          RequiredParameter[] requiredParams = m.getAnnotation(StatParameters.class).value();
+          for (Parameter parameter : parameters) {
+              boolean exists = false;
+              for (RequiredParameter requiredParameter : requiredParams) {
+                if (requiredParameter.name().equals(parameter.name)) {
+                    exists = true;
+                    break;
+                }
+              }
+              
+              if (!exists) {
+                  throw new BadParameterException("calculateState paremeters missing parameter : " + parameter.name);
+              }
+          }
+          
+      }
+  }
+  
+  /** 
    *  The method that does the actual calculation. 
    *  Override this in derived classes for use.
    * 
    *  @param facebookClient facebook client instance
-   *  @param parameters Hashtable of strings, parameters for the calculations
+   *  @param parameters Zero or more Parameters for the calculations
    * @return StatResponse the stat response of the calculation
    */
-  protected abstract StatResponse calculateStat(FacebookClient facebookClient, HashMap<String, String> parameters );
+  protected abstract StatResponse calculateStat(FacebookClient facebookClient, Parameter... parameters );
 
 }

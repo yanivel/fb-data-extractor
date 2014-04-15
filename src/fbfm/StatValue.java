@@ -16,7 +16,7 @@ import com.google.common.collect.Range;
 public class StatValue<T extends Comparable> {
     protected T value;
     protected Range<T> range;
-    
+
     /**
      * Create the stat value with a value and a closed range
      * 

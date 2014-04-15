@@ -11,13 +11,7 @@ public class StatResponse {
 
   protected String name;
   
-  /**
-   * StatResponse constructor
-   * 
-   */
-  StatResponse()
-  {
-  }
+  
   
   /**
    * StatResponse constructor
@@ -25,10 +19,19 @@ public class StatResponse {
    * @param name name of the stat
    * @param description description of the stat
    */
-  StatResponse(String name, String description)
+  public StatResponse(String name, String description)
   {
       this.name = name;
       this.description = description;
+  }
+  
+  /**
+   * StatResponse constructor
+   * 
+   */
+  public StatResponse()
+  {
+      this("","");
   }
   
   /**

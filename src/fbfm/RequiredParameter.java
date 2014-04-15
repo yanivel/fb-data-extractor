@@ -1,7 +1,7 @@
 package fbfm;
 
 /** 
- *  This annotation is used to generate data for a StatResponse.
+ *  This annotation is used in StatParameters annotation.
  * 
  * @author Yaniv Elimor
  */
@@ -12,11 +12,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface StatInfo {
+@Target(ElementType.METHOD)
+public @interface RequiredParameter {
 
   String name();
-  String description();
-  StatType myStatType();
 
 }
+
