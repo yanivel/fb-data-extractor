@@ -51,10 +51,10 @@ public abstract class Stat {
   protected void checkParameters(Parameter... parameters) throws BadParameterException
   {
       Class c = this.getClass();
-      
+  
       Method m;
       try {
-         m = c.getMethod("calculateState");
+         m = c.getDeclaredMethod("calculateStat", FacebookClient.class, Parameter[].class);
       } catch (NoSuchMethodException exc) {
           throw new BadParameterException(exc);
       }
@@ -65,14 +65,14 @@ public abstract class Stat {
           for (Parameter parameter : parameters) {
               boolean exists = false;
               for (RequiredParameter requiredParameter : requiredParams) {
-                if (requiredParameter.name().equals(parameter.name)) {
+                if (requiredParameter.name().toLowerCase().equals(parameter.name)) {
                     exists = true;
                     break;
                 }
               }
               
               if (!exists) {
-                  throw new BadParameterException("calculateState paremeters missing parameter : " + parameter.name);
+                  throw new BadParameterException("calculateStat paremeters missing parameter : " + parameter.name);
               }
           }
           
