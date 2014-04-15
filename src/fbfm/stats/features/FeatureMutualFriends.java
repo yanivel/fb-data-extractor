@@ -15,7 +15,6 @@ import fbfm.StatInfo;
 import fbfm.StatResponse;
 import fbfm.StatType;
 import fbfm.StatParameters;
-import fbfm.RequiredParameter;
 import fbfm.StatValue;
 
 
@@ -25,7 +24,7 @@ import fbfm.StatValue;
  */
 @StatInfo(name="Number of mutual friends",
           description="The number of mutual friends between 2 profiles which are not friends",
-          myStatType = StatType.FEATURE)
+          statType = StatType.FEATURE)
 public class FeatureMutualFriends extends Stat{
     
     
@@ -39,7 +38,7 @@ public class FeatureMutualFriends extends Stat{
    */
     
     @StatParameters({
-        @RequiredParameter(name="friendId")
+        @StatParameters.RequiredParameter(name="friendId")
     })
     @Override
     // add annotation of parameter needed

@@ -14,8 +14,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface StatParameters {
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface RequiredParameter {
 
-  RequiredParameter[] value();
+        String name();
+
+    }
+    RequiredParameter[] value();
 
 }
 

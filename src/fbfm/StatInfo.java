@@ -17,6 +17,6 @@ public @interface StatInfo {
 
   String name();
   String description();
-  StatType myStatType();
+  StatType statType();
 
 }

@@ -28,6 +28,9 @@ public abstract class Stat {
       StatResponse response = this.calculateStat(facebookClient, parameters);
       
       StatInfo statInfo = this.getClass().getAnnotation(StatInfo.class);
+      if (statInfo == null) 
+          throw new StatException("Must annotate Stat "+this.getClass()+ " with StatInfo annotation");
+      
       String name = statInfo.name();
       String description = statInfo.description();
       
@@ -61,10 +64,10 @@ public abstract class Stat {
       
       if (m.isAnnotationPresent(StatParameters.class)) {
 
-          RequiredParameter[] requiredParams = m.getAnnotation(StatParameters.class).value();
+          StatParameters.RequiredParameter[] requiredParams = m.getAnnotation(StatParameters.class).value();
           for (Parameter parameter : parameters) {
               boolean exists = false;
-              for (RequiredParameter requiredParameter : requiredParams) {
+              for (StatParameters.RequiredParameter requiredParameter : requiredParams) {
                 if (requiredParameter.name().toLowerCase().equals(parameter.name)) {
                     exists = true;
                     break;
