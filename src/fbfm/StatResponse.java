@@ -1,11 +1,18 @@
 package fbfm;
 
+import com.google.common.collect.Iterators;
+import com.google.common.base.Joiner;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+
 /** 
- *  This class includes the details of Stat data, such as name, description, value and type.
+ *  This class includes the details of stat data, such as name, description, value and type.
  */
 public class StatResponse {
 
-  protected StatValue<?> value;
+  protected List<StatValue<?>> values;
 
   protected String description;
 
@@ -23,6 +30,7 @@ public class StatResponse {
   {
       this.name = name;
       this.description = description;
+      this.values = new ArrayList<>();
   }
   
   /**
@@ -76,7 +84,7 @@ public class StatResponse {
    * @param value a StatValue
    */
   public void setValue(StatValue<?> value) {
-      this.value = value;
+      this.values.add(value);
   }
   
   /**
@@ -84,8 +92,8 @@ public class StatResponse {
    * 
    * @return StatValue
    */
-  public StatValue<?> getValue() {
-      return this.value;
+  public Iterator<StatValue<?>> getValues() {
+      return Iterators.unmodifiableIterator(this.values.iterator());
   }
   
   /**
@@ -94,9 +102,12 @@ public class StatResponse {
    */
   @Override 
   public String toString() {
-      return this.name + ": " 
-              + this.description 
-              + ". Value = " + this.value.toString();
+      String returnValue = this.name + ": " 
+                         + this.description 
+                         + ". Values = " + Joiner.on(",").join(this.values); 
+      
+      
+      return returnValue;
   }
 
 }

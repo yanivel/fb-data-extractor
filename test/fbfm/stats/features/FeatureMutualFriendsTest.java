@@ -6,9 +6,10 @@
 
 package fbfm.stats.features;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
-import com.restfb.Parameter;
 import fbfm.BadParameterException;
 import fbfm.StatException;
 import fbfm.StatResponse;
@@ -17,7 +18,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -50,13 +50,15 @@ public class FeatureMutualFriendsTest {
     @Test
     public void testPerformCalculation() throws StatException, BadParameterException {
         System.out.println("calculateStat");
-        String accessToken = "CAACEdEose0cBAHnGdHE7HF0Q4KNOIEogC56qHZCZAtfK5WEZC7do0U3HBbLxMka00V4f0Qzipme6VNufAC5RlqdQjgbQ9n9OBpsbBncLRsKzA9zXGyGFMuMEzxaBTTLLK9JEtr3CicsbZC3IwceIwcydJuQPD6iy1AMtdApTpEZCE4Aw7nUauGv031VeitC5ikGQTMe5cbAZDZD";
+        String accessToken = "CAACEdEose0cBAJWdXlmaG3PYZCPZAYelhJTZCJfuoXJDEqoDYMZAd0iCdxQaAZCJgRfVZCBUaWSgmIKToiRqFY431Kn0GrF9D6owdb6R18lkNHF7FfZBYaKBiHxZCLmthOkZCw59HOmv8hLVdv9nZCr8BwNU3npY5INNls7YNHp4SZCxIDZCZAZBhaPQNcRIe08Kc3nUEBnN0roI2n2gZDZD";
         String friendId = "100001531730648";
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         
         FeatureMutualFriends instance = new FeatureMutualFriends();
         StatResponse expResult = null;
-        StatResponse result = instance.performCalculation(facebookClient, Parameter.with("friendId", friendId));
+        SetMultimap<String, Object> params = HashMultimap.create();
+        params.put("friendId", friendId);
+        StatResponse result = instance.performCalculation(facebookClient, params );
         System.out.println(result);
         //assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.

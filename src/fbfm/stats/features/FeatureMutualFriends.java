@@ -6,8 +6,8 @@
 
 package fbfm.stats.features;
 
+import com.google.common.collect.SetMultimap;
 import com.restfb.FacebookClient;
-import com.restfb.Parameter;
 import com.restfb.Connection;
 import com.restfb.types.User;
 import fbfm.Stat;
@@ -16,6 +16,7 @@ import fbfm.StatResponse;
 import fbfm.StatType;
 import fbfm.StatParameters;
 import fbfm.StatValue;
+import java.util.Collection;
 
 
 /**
@@ -33,7 +34,7 @@ public class FeatureMutualFriends extends Stat{
    *  Override this in derived classes for use.
    * 
    *  @param facebookClient facebook client instance
-   *  @param parameters Hashtable of strings, parameters for the calculations
+   *  @param parameters {@code: SetMultiMap} of strings, parameters for the calculations
    * @return StatResponse the stat response of the calculation
    */
     
@@ -42,22 +43,18 @@ public class FeatureMutualFriends extends Stat{
     })
     @Override
     // add annotation of parameter needed
-  protected StatResponse calculateStat(FacebookClient facebookClient, Parameter... parameters )
+  protected StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters )
   {
-      String friendId = "";
-      for (Parameter param : parameters) {
-          if (param.name.equals("friendId")) {
-              friendId = param.value;
-          }
-      }
       
-      Connection<User> mutualFriends = facebookClient.fetchConnection("me/mutualfriends/"+friendId, User.class);
+    Collection<Object> params = parameters.get("friendId");
       
-      int mutualCount = mutualFriends.getData().size();
-      
-      StatResponse response = new StatResponse();
-      response.setValue(new StatValue<>(mutualCount, 0, 10000));
-      
-      return response;
+    StatResponse response = new StatResponse();
+    int mutualCount = 0;
+    for (Object friendId : params) {
+        Connection<User> mutualFriends = facebookClient.fetchConnection("me/mutualfriends/"+friendId, User.class);
+        mutualCount = mutualFriends.getData().size();
+        response.setValue(new StatValue<>(mutualCount, 0, 10000));
+    }
+    return response;
   }
 }

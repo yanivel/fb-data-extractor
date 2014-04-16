@@ -2,9 +2,10 @@ package fbfm;
 
 
 import com.restfb.FacebookClient;
-import com.restfb.Parameter;
-import java.lang.annotation.Annotation;
+import com.google.common.collect.SetMultimap;
 import java.lang.reflect.Method;
+import java.util.Map;
+
 
 
 /** 
@@ -22,7 +23,7 @@ public abstract class Stat {
    *  @throws BadParameterException
    * @return StatResponse the {@code Stat} response of the calculation
    */
-  public StatResponse performCalculation(FacebookClient facebookClient, Parameter... parameters ) throws StatException,
+  public StatResponse performCalculation(FacebookClient facebookClient, SetMultimap<String,Object> parameters ) throws StatException,
                                                                                                     BadParameterException{
       
       StatResponse response = this.calculateStat(facebookClient, parameters);
@@ -51,13 +52,13 @@ public abstract class Stat {
    * @param parameters
    * @throws BadParameterException
    */
-  protected void checkParameters(Parameter... parameters) throws BadParameterException
+  protected void checkParameters(SetMultimap<String,Object> parameters) throws BadParameterException
   {
       Class c = this.getClass();
   
       Method m;
       try {
-         m = c.getDeclaredMethod("calculateStat", FacebookClient.class, Parameter[].class);
+         m = c.getDeclaredMethod("calculateStat", FacebookClient.class, SetMultimap.class);
       } catch (NoSuchMethodException exc) {
           throw new BadParameterException(exc);
       }
@@ -65,17 +66,17 @@ public abstract class Stat {
       if (m.isAnnotationPresent(StatParameters.class)) {
 
           StatParameters.RequiredParameter[] requiredParams = m.getAnnotation(StatParameters.class).value();
-          for (Parameter parameter : parameters) {
+          for (Map.Entry<String,Object> entry : parameters.entries()) {
               boolean exists = false;
               for (StatParameters.RequiredParameter requiredParameter : requiredParams) {
-                if (requiredParameter.name().toLowerCase().equals(parameter.name)) {
+                if (requiredParameter.name().equals(entry.getKey())) {
                     exists = true;
                     break;
                 }
               }
               
               if (!exists) {
-                  throw new BadParameterException("calculateStat paremeters missing parameter : " + parameter.name);
+                  throw new BadParameterException("calculateStat paremeters missing parameter : " + entry.getKey());
               }
           }
           
@@ -90,6 +91,6 @@ public abstract class Stat {
    *  @param parameters Zero or more Parameters for the calculations
    * @return StatResponse the {@code Stat} response of the calculation
    */
-  protected abstract StatResponse calculateStat(FacebookClient facebookClient, Parameter... parameters );
+  protected abstract StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters );
 
 }
