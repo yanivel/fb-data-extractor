@@ -66,9 +66,10 @@ public abstract class Stat {
       if (m.isAnnotationPresent(StatParameters.class)) {
 
           StatParameters.RequiredParameter[] requiredParams = m.getAnnotation(StatParameters.class).value();
-          for (Map.Entry<String,Object> entry : parameters.entries()) {
+          for (StatParameters.RequiredParameter requiredParameter : requiredParams) {
+          
               boolean exists = false;
-              for (StatParameters.RequiredParameter requiredParameter : requiredParams) {
+                for (Map.Entry<String,Object> entry : parameters.entries()) {
                 if (requiredParameter.name().equals(entry.getKey())) {
                     exists = true;
                     break;
@@ -76,7 +77,7 @@ public abstract class Stat {
               }
               
               if (!exists) {
-                  throw new BadParameterException("calculateStat paremeters missing parameter : " + entry.getKey());
+                  throw new BadParameterException("calculateStat missing parameter : " + requiredParameter.name());
               }
           }
           
