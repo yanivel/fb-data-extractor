@@ -18,14 +18,15 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
-public class FeatureMutualFriendsTest {
+public class FeatureCommonLikeRatioTest {
     
-    public FeatureMutualFriendsTest() {
+    public FeatureCommonLikeRatioTest() {
     }
     
     @BeforeClass
@@ -45,19 +46,19 @@ public class FeatureMutualFriendsTest {
     }
 
     /**
-     * Test of calculateStat method, of class FeatureMutualFriends.
+     * Test of calculateStat method, of class FeatureCommonLikeRatio.
      */
     @Test
-    public void testPerformCalculation() throws StatException, BadParameterException {
+    public void testPerformCalculation() throws StatException, BadParameterException{
         System.out.println("calculateStat");
         String accessToken = "CAACEdEose0cBAAVpnGu3QR9Wuq73zIcIFZCNsVjRXrap9uH6pnmaZBgPGlOvQF1LhEaPSb2q9lBx4TExuUzXO9F1dtJEDqoMwv2bzgHZAY3iKZC5Fu8DiX7tEgRtASIZB8ZAXPAPTNjMYoZBFcznqrJVy3RoC4wLWJVlIeSlUHPvexOW6jFKXMwCMQvMxZAhYy0ZD";
-        String friendId = "1467285958";
+        String friendId = "1400265161"; 
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         
-        FeatureMutualFriends instance = new FeatureMutualFriends();
+        FeatureCommonLikeRatio instance = new FeatureCommonLikeRatio();
         StatResponse expResult = null;
         SetMultimap<String, Object> params = HashMultimap.create();
-        params.put("profileId", friendId);
+        params.put("friendId", friendId);
         StatResponse result = instance.performCalculation(facebookClient, params );
         System.out.println(result);
         //assertEquals(expResult, result);

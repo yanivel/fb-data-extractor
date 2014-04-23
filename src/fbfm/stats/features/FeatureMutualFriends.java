@@ -39,19 +39,19 @@ public class FeatureMutualFriends extends Stat{
    */
     
     @StatParameters({
-        @StatParameters.RequiredParameter(name="friendId")
+        @StatParameters.RequiredParameter(name="profileId")
     })
     @Override
     // add annotation of parameter needed
   protected StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters )
   {
       
-    Collection<Object> params = parameters.get("friendId");
+    Collection<Object> params = parameters.get("profileId");
       
     StatResponse response = new StatResponse();
     int mutualCount = 0;
-    for (Object friendId : params) {
-        Connection<User> mutualFriends = facebookClient.fetchConnection("me/mutualfriends/"+friendId, User.class);
+    for (Object profileId : params) {
+        Connection<User> mutualFriends = facebookClient.fetchConnection("me/mutualfriends/"+profileId, User.class);
         mutualCount = mutualFriends.getData().size();
         response.setValue(new StatValue<>(mutualCount, 0, 10000));
     }
