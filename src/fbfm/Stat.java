@@ -3,6 +3,7 @@ package fbfm;
 
 import com.restfb.FacebookClient;
 import com.google.common.collect.SetMultimap;
+import com.restfb.types.User;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -43,6 +44,9 @@ public abstract class Stat {
       
       response.setName(statInfo.name());
       response.setDescription(statInfo.description());
+      
+      User user = facebookClient.fetchObject("me", User.class);
+      response.setUserId(user.getId());
       
       return response;
   }

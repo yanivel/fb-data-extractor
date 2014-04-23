@@ -53,7 +53,7 @@ public class FeatureMutualFriends extends Stat{
     for (Object profileId : params) {
         Connection<User> mutualFriends = facebookClient.fetchConnection("me/mutualfriends/"+profileId, User.class);
         mutualCount = mutualFriends.getData().size();
-        response.setValue(new StatValue<>(mutualCount, 0, 10000));
+        response.setValue(profileId.toString(), new StatValue<>(mutualCount, 0, 10000));
     }
     return response;
   }

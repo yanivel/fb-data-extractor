@@ -8,27 +8,25 @@ package fbfm.stats.features;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
-import com.restfb.types.User;
 import fbfm.BadParameterException;
 import fbfm.StatException;
 import fbfm.StatResponse;
-import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
-public class FeatureCommonLikeRatioTest {
+public class FeatureCommonGroupsTest {
     
-    public FeatureCommonLikeRatioTest() {
+    public FeatureCommonGroupsTest() {
     }
     
     @BeforeClass
@@ -48,28 +46,19 @@ public class FeatureCommonLikeRatioTest {
     }
 
     /**
-     * Test of calculateStat method, of class FeatureCommonLikeRatio.
+     * Test of calculateStat method, of class FeatureCommonGroups.
      */
     @Test
-    public void testPerformCalculation() throws StatException, BadParameterException{
+    public void testCalculateStat() throws StatException, BadParameterException{
         System.out.println("calculateStat");
-        String accessToken = "CAACEdEose0cBAOq4AyQx0NqQ6plPJ7YEfscKuLWxH9lkNkTzR5FkFg0o1hvYmaIjw1ES44GY5JYh5bJCLKGZAQxAU5ktGUs2sX5sNVGIFsRw69CVZAYLQrf84DcuTZAE1BTVZC60eN3D8d1YkAgnZCw8qIty35Fwk9gRd8jfuby8fN0rm8hXRsp4skhJL5AEZD";
-        String friendId = "1400265161"; 
+        String accessToken = "CAACEdEose0cBAAVpnGu3QR9Wuq73zIcIFZCNsVjRXrap9uH6pnmaZBgPGlOvQF1LhEaPSb2q9lBx4TExuUzXO9F1dtJEDqoMwv2bzgHZAY3iKZC5Fu8DiX7tEgRtASIZB8ZAXPAPTNjMYoZBFcznqrJVy3RoC4wLWJVlIeSlUHPvexOW6jFKXMwCMQvMxZAhYy0ZD";
+        String profileId = "1400265161"; 
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         
-        FeatureCommonLikeRatio instance = new FeatureCommonLikeRatio();
+        FeatureCommonGroups instance = new FeatureCommonGroups();
         StatResponse expResult = null;
-        
-        Connection<User> myFriends = facebookClient.fetchConnection("me/friends", User.class);
-
         SetMultimap<String, Object> params = HashMultimap.create();
-        for (List<User> friendPaging : myFriends) {
-          for (User friend : friendPaging) {
-              params.put("friendId", friend.getId());
-          }
-        
-        }
-        
+        params.put("profileId", profileId);
         StatResponse result = instance.performCalculation(facebookClient, params );
         System.out.println(result);
         //assertEquals(expResult, result);

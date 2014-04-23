@@ -1,10 +1,11 @@
 package fbfm;
 
-import com.google.common.collect.Iterators;
 import com.google.common.base.Joiner;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.SetMultimap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 
 /** 
@@ -12,11 +13,13 @@ import java.util.List;
  */
 public class StatResponse {
 
-  protected List<StatValue<?>> values;
+  protected SetMultimap<String,StatValue<?>> values;
 
   protected String description;
 
   protected String name;
+  
+  protected String userId;
   
   
   
@@ -30,7 +33,7 @@ public class StatResponse {
   {
       this.name = name;
       this.description = description;
-      this.values = new ArrayList<>();
+      this.values = HashMultimap.create();
   }
   
   /**
@@ -61,6 +64,24 @@ public class StatResponse {
   }
   
   /**
+   * Set the StatResponse userId
+   * 
+   * @param userId
+   */
+  public void setUserId(String userId) {
+      this.userId = userId;
+  }
+  
+  /**
+   * return the userId of the StatResponse
+   * 
+   * @return String
+   */
+  public String getUserId() {
+      return this.userId;
+  }
+  
+  /**
    * Set the StatResponse description
    * 
    * @param description
@@ -83,19 +104,27 @@ public class StatResponse {
    * 
    * @param value a StatValue
    */
-  public void setValue(StatValue<?> value) {
-      this.values.add(value);
+  public void setValue(String key, StatValue<?> value) {
+      this.values.put(key, value);
   }
   
   /**
-   * return the value of the StatResponse
+   * return the value of the StatResponse by key
    * 
    * @return StatValue
    */
-  public Iterator<StatValue<?>> getValues() {
-      return Iterators.unmodifiableIterator(this.values.iterator());
+  public StatValue<?> getValue(String key) {
+      return Iterables.getFirst(this.values.get(key), null);
   }
   
+    /**
+   * return Iterator to values
+   * 
+   * @return Iterator
+   */
+  public Set<Entry<String,StatValue<?>>> getValues() {
+      return this.values.entries();
+  }
   /**
    * 
    * @return String
@@ -104,7 +133,7 @@ public class StatResponse {
   public String toString() {
       String returnValue = this.name + ": " 
                          + this.description 
-                         + ". Values = " + Joiner.on(",").join(this.values); 
+                         + ". Values = " + Joiner.on(",").join(this.getValues()); 
       
       
       return returnValue;
