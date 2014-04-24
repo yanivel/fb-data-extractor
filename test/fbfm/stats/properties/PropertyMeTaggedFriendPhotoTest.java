@@ -10,8 +10,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
-import fbfm.BadParameterException;
-import fbfm.StatException;
 import fbfm.StatResponse;
 import fbfm.util.TokenUtility;
 import org.junit.After;
@@ -24,9 +22,9 @@ import org.junit.Test;
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
-public class PropertyFriendTaggedMePhotoTest {
+public class PropertyMeTaggedFriendPhotoTest {
     
-    public PropertyFriendTaggedMePhotoTest() {
+    public PropertyMeTaggedFriendPhotoTest() {
     }
     
     @BeforeClass
@@ -46,16 +44,17 @@ public class PropertyFriendTaggedMePhotoTest {
     }
 
     /**
-     * Test of calculateStat method, of class PropertyFriendTaggedMePhoto.
+     * Test of calculateStat method, of class PropertyMeTaggedFriendPhoto.
      */
     @Test
-    public void testCalculateStat() throws StatException, BadParameterException{
-        System.out.println("calculateStat");
+    public void testCalculateStat() throws Exception {
+        
+         System.out.println("calculateStat");
         String accessToken = TokenUtility.getAccessToken();
         String profileId = "1378447125"; 
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         
-        PropertyFriendTaggedMePhoto instance = new PropertyFriendTaggedMePhoto();
+        PropertyMeTaggedFriendPhoto instance = new PropertyMeTaggedFriendPhoto();
         StatResponse expResult = null;
         SetMultimap<String, Object> params = HashMultimap.create();
         

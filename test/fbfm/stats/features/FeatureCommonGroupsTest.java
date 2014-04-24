@@ -13,12 +13,12 @@ import com.restfb.FacebookClient;
 import fbfm.BadParameterException;
 import fbfm.StatException;
 import fbfm.StatResponse;
+import fbfm.util.TokenUtility;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -51,7 +51,7 @@ public class FeatureCommonGroupsTest {
     @Test
     public void testCalculateStat() throws StatException, BadParameterException{
         System.out.println("calculateStat");
-        String accessToken = "CAACEdEose0cBAAVpnGu3QR9Wuq73zIcIFZCNsVjRXrap9uH6pnmaZBgPGlOvQF1LhEaPSb2q9lBx4TExuUzXO9F1dtJEDqoMwv2bzgHZAY3iKZC5Fu8DiX7tEgRtASIZB8ZAXPAPTNjMYoZBFcznqrJVy3RoC4wLWJVlIeSlUHPvexOW6jFKXMwCMQvMxZAhYy0ZD";
+        String accessToken = TokenUtility.getAccessToken();
         String profileId = "1400265161"; 
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         

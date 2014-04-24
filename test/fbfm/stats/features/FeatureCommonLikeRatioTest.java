@@ -15,6 +15,7 @@ import com.restfb.types.User;
 import fbfm.BadParameterException;
 import fbfm.StatException;
 import fbfm.StatResponse;
+import fbfm.util.TokenUtility;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -53,7 +54,7 @@ public class FeatureCommonLikeRatioTest {
     @Test
     public void testPerformCalculation() throws StatException, BadParameterException{
         System.out.println("calculateStat");
-        String accessToken = "CAACEdEose0cBAOq4AyQx0NqQ6plPJ7YEfscKuLWxH9lkNkTzR5FkFg0o1hvYmaIjw1ES44GY5JYh5bJCLKGZAQxAU5ktGUs2sX5sNVGIFsRw69CVZAYLQrf84DcuTZAE1BTVZC60eN3D8d1YkAgnZCw8qIty35Fwk9gRd8jfuby8fN0rm8hXRsp4skhJL5AEZD";
+        String accessToken = TokenUtility.getAccessToken();
         String friendId = "1400265161"; 
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         
