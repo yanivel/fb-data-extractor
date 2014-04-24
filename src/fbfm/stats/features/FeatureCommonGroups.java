@@ -44,7 +44,6 @@ public class FeatureCommonGroups extends Stat{
         @StatParameters.RequiredParameter(name="profileId")
     })
     @Override
-    // add annotation of parameter needed
   protected StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters )
   {
       

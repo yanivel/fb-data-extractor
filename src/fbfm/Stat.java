@@ -94,8 +94,9 @@ public abstract class Stat {
    * 
    *  @param facebookClient facebook client instance
    *  @param parameters Zero or more Parameters for the calculations
+   *  @throws StatException
    * @return StatResponse the {@code Stat} response of the calculation
    */
-  protected abstract StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters );
+  protected abstract StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters ) throws StatException;
 
 }

@@ -43,7 +43,7 @@ public class PropertyPrivateMessages extends Stat{
         @StatParameters.RequiredParameter(name="timePeriod") // days from now
     })
     @Override
-    // add annotation of parameter needed
+    // TODO: add time limit to query 
   protected StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters )
   {
       
