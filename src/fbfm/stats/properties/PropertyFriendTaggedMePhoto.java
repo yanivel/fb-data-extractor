@@ -52,7 +52,7 @@ public class PropertyFriendTaggedMePhoto extends Stat{
   {
       
     Collection<Object> params = parameters.get("friendId");
-    String timePeriod = Iterables.getFirst(parameters.get("tagAmount"), "").toString();
+    String tagAmount = Iterables.getFirst(parameters.get("tagAmount"), "").toString();
     
     StatResponse response = new StatResponse();
     // get user's id

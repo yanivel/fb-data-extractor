@@ -55,7 +55,7 @@ public class PropertyFriendTaggedMePhotoTest {
     public void testCalculateStat() throws StatException, BadParameterException{
         System.out.println("calculateStat");
         String accessToken = "CAACEdEose0cBACPrtwmUgEwbdad4ZC7eZBfQmliEyGo0HaTdkxC4vAIUrawDjIw5RphpRLuy03RTiUZA4ZCgDzcLosHezUR0ZBjcCsOQe2ZBiYXq3bsbR5e95DWEj8ZC88sUtZBVAhCaQupygZA2AZAJhcnA6fZAYXhWks31Vr94FfMTAViZBiZAtDEo5jPkAFANwnJCbzOlZCZBPtaJwZDZD";
-        String profileId = "100001531730648"; 
+        String profileId = "786753874"; 
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         
         PropertyFriendTaggedMePhoto instance = new PropertyFriendTaggedMePhoto();
