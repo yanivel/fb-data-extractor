@@ -125,6 +125,16 @@ public class StatResponse {
   public Set<Entry<String,StatValue<?>>> getValues() {
       return this.values.entries();
   }
+  
+  /**
+   * return Set of keys in the response
+   * 
+   * @return Set of keys
+   */
+  public Set<String> getKeys() {
+      return this.values.keySet();
+  }
+  
   /**
    * 
    * @return String
