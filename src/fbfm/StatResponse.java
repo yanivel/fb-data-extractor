@@ -19,6 +19,8 @@ public class StatResponse {
 
   protected String name;
   
+  protected Class<?> statClass;
+  
   protected String userId;
   
   
@@ -43,6 +45,16 @@ public class StatResponse {
   public StatResponse()
   {
       this("","");
+  }
+  
+  public void setStatClass(Class<?> clazz) 
+  {
+      this.statClass = clazz;
+  }
+  
+  public Class<?> getStatClass()
+  {
+      return this.statClass;
   }
   
   /**

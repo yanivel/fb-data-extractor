@@ -13,7 +13,7 @@ import com.restfb.FacebookClient;
 import fbfm.BadParameterException;
 import fbfm.StatException;
 import fbfm.StatResponse;
-import fbfm.util.TokenUtility;
+import fbfm.util.FacebookUtility;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -51,7 +51,7 @@ public class FeatureMutualFriendsTest {
     @Test
     public void testPerformCalculation() throws StatException, BadParameterException {
         System.out.println("calculateStat");
-        String accessToken = TokenUtility.getAccessToken();
+        String accessToken = FacebookUtility.getAccessToken();
         String friendId = "1467285958";
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         

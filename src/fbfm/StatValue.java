@@ -47,6 +47,11 @@ public class StatValue<T extends Comparable> {
         return this.value;
     }
     
+    public String stringValue()
+    {
+        return this.value.toString();
+    }
+    
     /**
      * 
      * @return String

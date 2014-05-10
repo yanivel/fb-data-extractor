@@ -47,6 +47,7 @@ public abstract class Stat {
       
       User user = facebookClient.fetchObject("me", User.class);
       response.setUserId(user.getId());
+      response.setStatClass(this.getClass());
       
       return response;
   }

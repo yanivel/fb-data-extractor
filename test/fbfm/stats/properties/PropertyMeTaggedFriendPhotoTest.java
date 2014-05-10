@@ -11,7 +11,7 @@ import com.google.common.collect.SetMultimap;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import fbfm.StatResponse;
-import fbfm.util.TokenUtility;
+import fbfm.util.FacebookUtility;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,7 +50,7 @@ public class PropertyMeTaggedFriendPhotoTest {
     public void testCalculateStat() throws Exception {
         
          System.out.println("calculateStat");
-        String accessToken = TokenUtility.getAccessToken();
+        String accessToken = FacebookUtility.getAccessToken();
         String profileId = "1378447125"; 
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         
