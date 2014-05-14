@@ -42,13 +42,13 @@ public class FeatureCommonLikeRatio extends Stat {
    */
     
     @StatParameters({
-        @StatParameters.RequiredParameter(name="friendId")
+        @StatParameters.RequiredParameter(name="profileId")
     })
     @Override
   protected StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters )
   {
       
-    Collection<Object> params = parameters.get("friendId");
+    Collection<Object> params = parameters.get("profileId");
     
     // get user likes - only id field to save bandwidth
     Connection<Page> userPageLikes = facebookClient.fetchConnection("me/likes", Page.class,

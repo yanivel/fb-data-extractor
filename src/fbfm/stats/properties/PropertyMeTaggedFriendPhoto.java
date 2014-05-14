@@ -21,6 +21,7 @@ import fbfm.StatParameters;
 import fbfm.StatResponse;
 import fbfm.StatType;
 import fbfm.StatValue;
+import fbfm.util.DebugUtility;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,14 +44,14 @@ public class PropertyMeTaggedFriendPhoto extends Stat{
    */
     // TODO: add tag amount to the equation :)
     @StatParameters({
-        @StatParameters.RequiredParameter(name="friendId"),
+        @StatParameters.RequiredParameter(name="profileId"),
         @StatParameters.RequiredParameter(name="tagAmount") // number of people tagged in the photo - to prevent promoter data
     })
     @Override
   protected StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters ) throws StatException
   {
       
-    Collection<Object> params = parameters.get("friendId");
+    Collection<Object> params = parameters.get("profileId");
     String tagAmount = Iterables.getFirst(parameters.get("tagAmount"), "").toString();
     
     StatResponse response = new StatResponse();
@@ -78,17 +79,17 @@ public class PropertyMeTaggedFriendPhoto extends Stat{
         if (!photoIds.isEmpty()) {
             for (String photoId : photoIds) {
                 // get photo tags
-                System.out.println("getting tags for photo : " + photoId);
+                DebugUtility.println("getting tags for photo : " + photoId);
                
                 try {
                     JsonObject photoTagsConnection = facebookClient.fetchObject(photoId+"/tags", JsonObject.class,
                                                                     Parameter.with("fields", "tagging_user"));
                     
                     JsonArray photoTags = photoTagsConnection.getJsonArray("data");
-                    System.out.println("finished reading photo tags, total tags for photo is : " + photoTags.length());
+                    DebugUtility.println("finished reading photo tags, total tags for photo is : " + photoTags.length());
                     int numTags = photoTags.length();
                     for (int i=0; i<numTags; ++i) {
-                        System.out.println("running on tag " + i);
+                        DebugUtility.println("running on tag " + i);
                         // get tag objects and check if the tag is of the user and the tagger is the friend
                         JsonObject tag = photoTags.getJsonObject(i);
                         if (tag.getString("id").equals(friendId)) {
@@ -102,13 +103,13 @@ public class PropertyMeTaggedFriendPhoto extends Stat{
                     }
                 } catch (FacebookOAuthException e) {
                     if (e.getErrorCode() == 1) {
-                        System.out.println("error with photo " + photoId + " (probably old photo with no tagging data) - continuing.");
+                        DebugUtility.println("error with photo " + photoId + " (probably old photo with no tagging data) - continuing.");
                     } else {
                         throw new StatException("thrown error : " + e.getErrorMessage() + " : code " + e.getErrorCode());
                     }
                 }
                 
-                System.out.println("finished photo : " + photoId);
+                DebugUtility.println("finished photo : " + photoId);
             }
         } 
         response.setValue(friendId.toString(), new StatValue<>(tagCounter,0,100000) );

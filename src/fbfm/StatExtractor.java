@@ -6,13 +6,19 @@
 
 package fbfm;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
+import com.google.common.collect.Table;
 import fbfm.util.FacebookUtility;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,6 +35,8 @@ public class StatExtractor {
     
     protected Set<Class<?>> stats;
     
+    protected Table<String, String, String> parameters;
+    
     // timeout between calls to facebook in milliseconds
     protected int timeout = 0;
     
@@ -39,6 +47,7 @@ public class StatExtractor {
     {
         this.profileIds = new ArrayList<>();
         this.stats = new HashSet();
+        this.parameters = HashBasedTable.create();
     }
     
     public StatExtractor(int timeout)
@@ -68,6 +77,12 @@ public class StatExtractor {
         this.userId = userId;
     }
     
+    
+    public void setTimeout(int timeout)
+    {
+        this.timeout = timeout;
+    }
+    
     public void setUser(String userId) 
     {
         this.userId = userId;
@@ -81,6 +96,16 @@ public class StatExtractor {
     public void addProfileId(String profileId)
     {
         this.profileIds.add(profileId);
+    }
+    
+    public void addParameter(Class<?> stat, String key, String value) 
+    {
+        this.parameters.put(stat.getName(), key, value);
+    }
+    
+    public StatExtractedData getExtractedData()
+    {
+        return this.statData;
     }
     
     // replaces profileIds list with a new one
@@ -108,17 +133,26 @@ public class StatExtractor {
         
         for (String profileId : this.profileIds) {
             for (Class<?> statClass : this.stats) {
-                // TODO timeout option!!!!!!!!!
                 try {
                     Stat stat = (Stat)statClass.newInstance(); 
                     
                     SetMultimap<String, Object> params = HashMultimap.create();
+                    
+                    // convert Map to SetMultiMap this way:
+                    // in the meanwhile until https://code.google.com/p/guava-libraries/issues/detail?id=465 is fixed
+                    for (Map.Entry<String, String> entry : this.parameters.row(statClass.getName()).entrySet()) {
+                      params.put(entry.getKey(), entry.getValue());
+                    }
+                    // "profileId" is added here
                     params.put("profileId", profileId);
                     
                     StatResponse result = stat.performCalculation(FacebookUtility.getFacebookClient(), params );
                     
                     this.statData.addData(result);
-                } catch (Exception ex) { // change to approprtiate errors
+                    // sleep for time out
+                    Thread.sleep(this.timeout);
+                } catch (Exception e) { // change to approprtiate errors
+                    e.printStackTrace();
                     // TODO: need here something??
                 }
             }
@@ -128,9 +162,32 @@ public class StatExtractor {
     }
     
     // TO DO
-    public boolean saveToFile(String filename)
+    public boolean saveToCSVFile(String filename)
     {
-        
+        try
+	{
+	    FileWriter writer = new FileWriter(filename);
+            
+	    writer.append(this.userId);
+	    writer.append(',');
+	    
+            /// continue this...
+	    writer.append('\n');
+ 
+	    writer.flush();
+	    writer.close();
+	}
+	catch(IOException e)
+	{
+	     e.printStackTrace();
+             return false;
+	} 
+        return true;
+    }
+    
+    public boolean printToConsole()
+    {
+        System.out.println(this.statData);
         return true;
     }
 }

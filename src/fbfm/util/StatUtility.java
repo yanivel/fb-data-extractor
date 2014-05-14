@@ -22,6 +22,10 @@ public class StatUtility {
     
     static private SetMultimap<StatType,Class<?>> stats = null;
     
+    private StatUtility() {
+        
+    }
+    
     // load all the stats from statInfo annotation in fbfm package
     static private void buildStatCollection() 
     {

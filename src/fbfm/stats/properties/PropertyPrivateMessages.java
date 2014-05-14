@@ -39,7 +39,7 @@ public class PropertyPrivateMessages extends Stat{
    */
     
     @StatParameters({
-        @StatParameters.RequiredParameter(name="friendId"),
+        @StatParameters.RequiredParameter(name="profileId"),
         @StatParameters.RequiredParameter(name="timePeriod") // days from now
     })
     @Override
@@ -47,7 +47,7 @@ public class PropertyPrivateMessages extends Stat{
   protected StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters )
   {
       
-    Collection<Object> params = parameters.get("friendId");
+    Collection<Object> params = parameters.get("profileId");
     String timePeriod = Iterables.getFirst(parameters.get("timePeriod"), "").toString();
     
     StatResponse response = new StatResponse();

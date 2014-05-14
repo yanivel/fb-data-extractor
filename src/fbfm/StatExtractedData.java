@@ -48,4 +48,13 @@ public class StatExtractedData {
     public Table<String, String, String> getDataTable() {
         return this.data;
     }
+    
+    /**
+     * 
+     * @return String
+     */
+    @Override 
+    public String toString() {
+        return this.data.toString();
+    }
 }
