@@ -20,39 +20,44 @@ import java.util.Map;
  */
 public class CacheUtility {
     
-    static protected Map<String, Map<String, Table<Object, Object, Object>>> userCaches = null;
+    protected Map<String, Map<String, Table<Object, Object, Object>>> userCaches = null;
     
     private CacheUtility() {
-        
+        this.initCache();
     }
     
-    static protected void initCache() {
-        if (CacheUtility.userCaches == null) {
-            CacheUtility.userCaches = new HashMap<>();
+    private static class LazyHolder {
+        private static final CacheUtility INSTANCE = new CacheUtility();
+    }
+ 
+    public static CacheUtility getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+    
+    protected void initCache() {
+        if (this.userCaches == null) {
+            this.userCaches = new HashMap<>();
         }
     }
     
-    static public void addUserCache(String userId, String cacheName) {
-        CacheUtility.initCache();
-        
-        
+    public void addUserCache(String userId, String cacheName) {
+
         Map<String, Table<Object, Object, Object>> cache = new HashMap<>();
         
         cache.put(cacheName, HashBasedTable.create());
         
-        CacheUtility.userCaches.put(userId, cache);
+        this.userCaches.put(userId, cache);
         
     }
     
-    static public void addUserCacheData(String userId, String cacheName, Object r, Object c, Object v)
+    public void addUserCacheData(String userId, String cacheName, Object r, Object c, Object v)
     {
-        CacheUtility.initCache();
-        
-        if (!CacheUtility.userCaches.containsKey(userId)) {
-            CacheUtility.addUserCache(userId, cacheName);
+       
+        if (!this.userCaches.containsKey(userId)) {
+            this.addUserCache(userId, cacheName);
         } 
         
-        Map<String, Table<Object, Object, Object>> map = CacheUtility.userCaches.get(userId);
+        Map<String, Table<Object, Object, Object>> map = this.userCaches.get(userId);
         if (!map.containsKey(cacheName)) {
             map.put(cacheName, HashBasedTable.create());
         }
@@ -60,17 +65,35 @@ public class CacheUtility {
         map.get(cacheName).put(r, c, v);
     }
     
-    static public Map<Object,Object> getCacheData(String userId, String cacheName, Object r)
+    public Map<Object,Object> getCacheData(String userId, String cacheName, Object r)
     {
+    
         Map<Object,Object> returnValue = null;
-        if (CacheUtility.userCaches.containsKey(userId)) {
-            Map<String, Table<Object, Object, Object>> map = CacheUtility.userCaches.get(userId);
+        if (this.userCaches.containsKey(userId)) {
+            Map<String, Table<Object, Object, Object>> map = this.userCaches.get(userId);
             if (map.containsKey(cacheName)) {
                 returnValue = map.get(cacheName).row(r);
             }
         }
         
         return returnValue;
+    }
+    
+    
+    public boolean hasCacheData(String userId, String cacheName) {
+        return  (this.userCaches.containsKey(userId) && this.userCaches.get(userId).containsKey(cacheName));
+    }
+    
+    public boolean hasCacheData(String userId, String cacheName, Object r) {
+
+        if (this.userCaches.containsKey(userId)) {
+            Map<String, Table<Object, Object, Object>> map = this.userCaches.get(userId);
+            if (map.containsKey(cacheName) && map.get(cacheName).containsRow(r)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
 }

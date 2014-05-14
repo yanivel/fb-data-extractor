@@ -21,10 +21,12 @@ import fbfm.StatParameters;
 import fbfm.StatResponse;
 import fbfm.StatType;
 import fbfm.StatValue;
+import fbfm.util.CacheUtility;
 import fbfm.util.DebugUtility;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -72,42 +74,49 @@ public class PropertyFriendTaggedMePhoto extends Stat{
     }
     
     // run for every friend in the parameters
+    CacheUtility cache = CacheUtility.getInstance();
     for (Object friendId : params) {
         int tagCounter = 0;
-        // if user has no photos he is tagged in, just put empty tagCounter values for all the friends
-        if (!photoIds.isEmpty()) {
-            for (String photoId : photoIds) {
-                // get photo tags
-                DebugUtility.println("getting tags for photo : " + photoId);
-               
-                try {
-                    JsonObject photoTagsConnection = facebookClient.fetchObject(photoId+"/tags", JsonObject.class,
-                                                                    Parameter.with("fields", "tagging_user"));
-                    
-                    JsonArray photoTags = photoTagsConnection.getJsonArray("data");
-                    DebugUtility.println("finished reading photo tags, total tags for photo is : " + photoTags.length());
-                    int numTags = photoTags.length();
-                    for (int i=0; i<numTags; ++i) {
-                        DebugUtility.println("running on tag " + i);
-                        // get tag objects and check if the tag is of the user and the tagger is the friend
-                        JsonObject tag = photoTags.getJsonObject(i);
-                        if (tag.getString("id").equals(userId)) {
-                            if (tag.getJsonObject("tagging_user").getString("id").equals(friendId)) {
-                                tagCounter += 1;
+        if (cache.hasCacheData(userId, "photoTaggers", friendId)) {
+            Map<Object, Object> taggers = cache.getCacheData(userId, "photoTaggers", friendId);
+            tagCounter = (int)taggers.get("numTags");
+        } else {
+            // if user has no photos he is tagged in, just put empty tagCounter values for all the friends
+            if (!photoIds.isEmpty()) {
+                for (String photoId : photoIds) {
+                    // get photo tags
+                    DebugUtility.println("getting tags for photo : " + photoId);
+
+                    try {
+                        JsonObject photoTagsConnection = facebookClient.fetchObject(photoId+"/tags", JsonObject.class,
+                                                                        Parameter.with("fields", "tagging_user"));
+
+                        JsonArray photoTags = photoTagsConnection.getJsonArray("data");
+                        DebugUtility.println("finished reading photo tags, total tags for photo is : " + photoTags.length());
+                        int numTags = photoTags.length();
+                        for (int i=0; i<numTags; ++i) {
+                            DebugUtility.println("running on tag " + i);
+                            // get tag objects and check if the tag is of the user and the tagger is the friend
+                            JsonObject tag = photoTags.getJsonObject(i);
+                            if (tag.getString("id").equals(userId)) {
+                                if (tag.getJsonObject("tagging_user").getString("id").equals(friendId)) {
+                                    tagCounter += 1;
+                                }
                             }
                         }
+                    } catch (FacebookOAuthException e) {
+                        if (e.getErrorCode() == 1) {
+                            DebugUtility.println("error with photo " + photoId + " (probably old photo with no tagging data) - continuing.");
+                        } else {
+                            throw new StatException("thrown error : " + e.getErrorMessage() + " : code " + e.getErrorCode());
+                        }
                     }
-                } catch (FacebookOAuthException e) {
-                    if (e.getErrorCode() == 1) {
-                        DebugUtility.println("error with photo " + photoId + " (probably old photo with no tagging data) - continuing.");
-                    } else {
-                        throw new StatException("thrown error : " + e.getErrorMessage() + " : code " + e.getErrorCode());
-                    }
+
+                    DebugUtility.println("finished photo : " + photoId);
                 }
-                
-                DebugUtility.println("finished photo : " + photoId);
             }
-        } 
+            cache.addUserCacheData(userId, "photoTaggers", friendId, "numTags", tagCounter);
+        }
         response.setValue(friendId.toString(), new StatValue<>(tagCounter,0,100000) );
     }
     return response;
