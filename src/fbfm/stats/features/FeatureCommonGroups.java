@@ -18,6 +18,7 @@ import fbfm.StatParameters;
 import fbfm.StatResponse;
 import fbfm.StatType;
 import fbfm.StatValue;
+import fbfm.util.DebugUtility;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -45,8 +46,7 @@ public class FeatureCommonGroups extends Stat{
     })
     @Override
   protected StatResponse calculateStat(FacebookClient facebookClient, SetMultimap<String,Object> parameters )
-  {
-      
+  {  
     Collection<Object> params = parameters.get("profileId");
     
     // get user likes - only id field to save bandwidth
@@ -75,6 +75,8 @@ public class FeatureCommonGroups extends Stat{
         
         // get common groups
         Set<String> commonGroupsSet = Sets.intersection(userGroupSet, friendGroupSet);
+        DebugUtility.println("num common groups: " + commonGroupsSet.size());
+        DebugUtility.println("common groups: " + commonGroupsSet);
         
         // add value to response
         response.setValue(profileId.toString(), new StatValue<>(commonGroupsSet.size(), 0, 1000));

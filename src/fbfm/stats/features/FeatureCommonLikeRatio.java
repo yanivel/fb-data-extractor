@@ -19,6 +19,7 @@ import fbfm.StatParameters;
 import fbfm.StatResponse;
 import fbfm.StatType;
 import fbfm.StatValue;
+import fbfm.util.DebugUtility;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +63,7 @@ public class FeatureCommonLikeRatio extends Stat {
     int numUserLikes = userLikeSet.size();
       
     StatResponse response = new StatResponse();
-    System.out.println("num user likes : " + numUserLikes);
+    DebugUtility.println("num user likes : " + numUserLikes);
     for (Object friendId : params) {
         // get friends' likes
         Connection<Page> friendPageLikes = facebookClient.fetchConnection(friendId+"/likes", Page.class, 
@@ -74,10 +75,10 @@ public class FeatureCommonLikeRatio extends Stat {
                 friendLikeSet.add(like.getId());
             }
         }
-        System.out.println("num of friend's likes : " + friendLikeSet.size());
+        DebugUtility.println("num of friend's likes : " + friendLikeSet.size());
         // get common likes
         Set<String> commonSet = Sets.intersection(userLikeSet, friendLikeSet);
-        System.out.println("num of intersection likes : " + commonSet.size());
+        DebugUtility.println("num of intersection likes : " + commonSet.size());
         // get like ratio
         int commonSetSize = commonSet.size();
         int totalNumLikes = numUserLikes + friendLikeSet.size() - commonSetSize;

@@ -4,6 +4,7 @@ package fbfm;
 import com.restfb.FacebookClient;
 import com.google.common.collect.SetMultimap;
 import com.restfb.types.User;
+import fbfm.util.DebugUtility;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public abstract class Stat {
    */
   public StatResponse performCalculation(FacebookClient facebookClient, SetMultimap<String,Object> parameters ) throws StatException,
                                                                                                     BadParameterException{
-      
+      DebugUtility.println(this.getClass() + ":");
       StatResponse response = this.calculateStat(facebookClient, parameters);
       
       StatInfo statInfo = this.getClass().getAnnotation(StatInfo.class);

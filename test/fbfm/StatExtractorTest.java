@@ -9,6 +9,7 @@ package fbfm;
 import fbfm.stats.properties.PropertyFriendTaggedMePhoto;
 import fbfm.stats.properties.PropertyMeTaggedFriendPhoto;
 import fbfm.stats.properties.PropertyPrivateMessages;
+import fbfm.util.DebugUtility;
 import fbfm.util.StatUtility;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class StatExtractorTest {
         System.out.println("extract");
         StatExtractor extractor = new StatExtractor();
         extractor.setUser("786753874");
-        Set<Class<?>> stats = StatUtility.getAvailableProperties();
+        Set<Class<?>> stats = StatUtility.getAvailableFeatures();
         extractor.setStats(stats);
         extractor.setTimeout(100);
         List<String> profiles = new ArrayList(10);
@@ -64,14 +65,14 @@ public class StatExtractorTest {
                 
         extractor.setProfileIds(profiles);
         
-        extractor.addParameter(PropertyFriendTaggedMePhoto.class, "tagAmount", "20");
-        extractor.addParameter(PropertyMeTaggedFriendPhoto.class, "tagAmount", "20");
-        extractor.addParameter(PropertyPrivateMessages.class, "timePeriod", "20");
-        
+        //extractor.addParameter(PropertyFriendTaggedMePhoto.class, "tagAmount", "20");
+        //extractor.addParameter(PropertyMeTaggedFriendPhoto.class, "tagAmount", "20");
+        //extractor.addParameter(PropertyPrivateMessages.class, "timePeriod", "20");
+        DebugUtility.setDebug(true);
         extractor.extract();
         extractor.printToConsole();
         boolean expResult = false;
-        boolean result = extractor.extract();
+        //boolean result = extractor.extract();
         //assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
