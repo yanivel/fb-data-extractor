@@ -69,6 +69,7 @@ public class PropertyUserLikesFriendPosts extends Stat {
             numOfPosts -= offsetVar;
         }
         response.setValue(profileId.toString(),new StatValue<>(userPostLikes, 0, 10000) );
+        userPostLikes = 0;
     }
     return response;
   }
