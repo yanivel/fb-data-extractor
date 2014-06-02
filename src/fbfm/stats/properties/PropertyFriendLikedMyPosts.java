@@ -7,12 +7,12 @@
 package fbfm.stats.properties;
 
 import com.google.common.collect.SetMultimap;
-import com.google.common.primitives.Ints;
 import com.restfb.Connection;
 import com.restfb.FacebookClient;
+import com.restfb.Parameter;
+import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
 import com.restfb.types.NamedFacebookType;
-import com.restfb.types.Post;
 import fbfm.Stat;
 import fbfm.StatInfo;
 import fbfm.StatParameters;
@@ -57,33 +57,32 @@ public class PropertyFriendLikedMyPosts extends Stat{
     int timeoutCount = 0;
             
     for (Object profileId : params) {     
-        Connection<Post> myFeed = facebookClient.fetchConnection("me/feed", Post.class);
+        
+        Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "likes"));
 
-        for (List<Post> myFeedConnectionPage : myFeed) {
-            for (Post post : myFeedConnectionPage) {
+        for (List<JsonObject> myFeedConnectionPage : myFeed) {
+            for (JsonObject post : myFeedConnectionPage) {
                 
-                if (post.getLikes() != null ) {
-                    Post.Likes postLikes = post.getLikes();
-                    List<NamedFacebookType> users = postLikes.getData();
-                    for (NamedFacebookType user: users) {
-                        if (user.getId() == profileId) {
+                if (post.has("likes") == true ) {
+                    JsonObject likes = post.getJsonObject("likes");
+                    JsonArray likers = likes.getJsonArray("data");
+                    int numLikers = likers.length();
+                    for (int i=0; i<numLikers; ++i) {
+                        JsonObject liker = likers.getJsonObject(i);
+                        
+                        if (liker.getString("id").equals(profileId)) {
                             numFriendLikes += 1;
                             break;
                         }
                     }
                 }
                 
-            }
-            
-            DebugUtility.println(myFeedConnectionPage);
-            
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                
             }
         }
+        
         response.setValue(profileId.toString(),new StatValue<>(numFriendLikes, 0, 100000) );
+        numFriendLikes = 0;
     }
     return response;
   }

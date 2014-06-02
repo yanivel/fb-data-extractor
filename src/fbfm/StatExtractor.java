@@ -6,6 +6,7 @@
 
 package fbfm;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -15,7 +16,6 @@ import fbfm.util.FacebookUtility;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -161,18 +161,38 @@ public class StatExtractor {
         return true;
     }
     
-    // TO DO
+    
     public boolean saveToCSVFile(String filename)
     {
+        Table<String, String, String> table = this.statData.getDataTable();
+        Set<String> traitsNames = table.columnKeySet();
+        
         try
 	{
 	    FileWriter writer = new FileWriter(filename);
+            // print the fields titles
+            writer.append("main profile,friend profile,");
+            ArrayList<String> traitArray = new ArrayList<>();
+            for (String traitName : traitsNames) {
+                traitArray.add(traitName);
+            }
+            writer.append(Joiner.on(",").join(traitArray));
+            writer.append('\n');
             
-	    writer.append(this.userId);
-	    writer.append(',');
+            // print all the features/properties (traits)
 	    
-            /// continue this...
-	    writer.append('\n');
+	    
+	    for (String profileId : this.profileIds) {
+                writer.append(this.userId + ',');
+                writer.append(profileId);
+                
+                Map<String, String> traits = table.row(profileId);
+                
+                for (String traitName : traitsNames) {
+                    writer.append(',' + traits.get(traitName));
+                }
+                writer.append('\n');
+            }
  
 	    writer.flush();
 	    writer.close();

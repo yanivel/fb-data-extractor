@@ -65,12 +65,19 @@ public class StatExtractorTest {
                 
         extractor.setProfileIds(profiles);
         
-        //extractor.addParameter(PropertyFriendTaggedMePhoto.class, "tagAmount", "20");
-        //extractor.addParameter(PropertyMeTaggedFriendPhoto.class, "tagAmount", "20");
-        //extractor.addParameter(PropertyPrivateMessages.class, "timePeriod", "20");
+        
         DebugUtility.setDebug(true);
         extractor.extract();
         extractor.printToConsole();
+        extractor.saveToCSVFile("features.csv");
+        
+        extractor.setStats(StatUtility.getAvailableProperties());
+        extractor.addParameter(PropertyFriendTaggedMePhoto.class, "tagAmount", "20");
+        extractor.addParameter(PropertyMeTaggedFriendPhoto.class, "tagAmount", "20");
+        extractor.addParameter(PropertyPrivateMessages.class, "timePeriod", "20");
+        extractor.extract();
+        extractor.printToConsole();
+        extractor.saveToCSVFile("properties.csv");
         boolean expResult = false;
         //boolean result = extractor.extract();
         //assertEquals(expResult, result);
