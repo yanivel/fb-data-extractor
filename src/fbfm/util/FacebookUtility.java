@@ -14,7 +14,7 @@ import com.restfb.FacebookClient;
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
 public class FacebookUtility {
-    static protected String facebookAccessToken = "CAACEdEose0cBACixuGwVwZCRuVHkbvMO5FpOV8pR2uEr2ZCvGd63kufoZB6Ffzm1Ba3Gwhp1YRttv1jy5FDQ8vSRgmIsvkBfTSDJrCDJxJJjmZBOePSj1y2tkKrzDvGWaKWq6RwFxV0VkpEJx7vc6h6lspqh2JMd4Y5YpQv2sIbyUvJnYGh0lw1wXhiZASZBmJnZBaO0dlXoAZDZD";
+    static protected String facebookAccessToken = "CAACEdEose0cBANjKPZAXCWQkQow2ZBgumzHKG1kz5KBoW4ubtbEcZCZALVWqQUk8axF2iobCikgI2ZChPQPY2nRUtrnZCqg14DWluqfOlHrWZAJvIK0pnmxmBL2VMLxddLS15fKhvtwZBhHXoKk8l7jWCYhxGNnu9QBvFjvSarV5ZAwSDmo1vqToi3N73zLmKHZBwZD";
     
     static protected FacebookClient facebookClient = null;
     

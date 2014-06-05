@@ -59,25 +59,26 @@ public class PropertyFriendCommentedMyPosts extends Stat{
  
     for (Object profileId : params) {     
         
-        Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "comments,from"));
+        Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "comments,from,status_type"));
 
         for (List<JsonObject> myFeedConnectionPage : myFeed) {
             for (JsonObject post : myFeedConnectionPage) {
                 
                 JsonObject from = post.getJsonObject("from");
                 if (from.getString("id").equals(userId)) {
-                    
-                    if (post.has("comments") == true ) {
-                        JsonObject commentsObj = post.getJsonObject("comments");
-                        JsonArray comments = commentsObj.getJsonArray("data");
-                        int numComments = comments.length();
-                        for (int i=0; i<numComments; ++i) {
-                            JsonObject comment = comments.getJsonObject(i);
-                            
-                            JsonObject commentFrom = comment.getJsonObject("from");
-                            if (commentFrom.getString("id").equals(profileId)) {
-                                numFriendComments += 1;
-                                break;
+                    if (post.has("status_type") == false || post.getString("status_type").equals("tagged_in_photo") == false) {
+                        if (post.has("comments") == true ) {
+                            JsonObject commentsObj = post.getJsonObject("comments");
+                            JsonArray comments = commentsObj.getJsonArray("data");
+                            int numComments = comments.length();
+                            for (int i=0; i<numComments; ++i) {
+                                JsonObject comment = comments.getJsonObject(i);
+
+                                JsonObject commentFrom = comment.getJsonObject("from");
+                                if (commentFrom.getString("id").equals(profileId)) {
+                                    numFriendComments += 1;
+                                    break;
+                                }
                             }
                         }
                     }

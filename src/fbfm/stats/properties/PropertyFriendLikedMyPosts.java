@@ -59,23 +59,25 @@ public class PropertyFriendLikedMyPosts extends Stat{
     
     for (Object profileId : params) {     
         
-        Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "likes,from"));
+        Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "likes,from,status_type"));
 
         for (List<JsonObject> myFeedConnectionPage : myFeed) {
             for (JsonObject post : myFeedConnectionPage) {
                 
                 JsonObject from = post.getJsonObject("from");
                 if (from.getString("id").equals(userId)) {
-                    if (post.has("likes") == true ) {
-                        JsonObject likes = post.getJsonObject("likes");
-                        JsonArray likers = likes.getJsonArray("data");
-                        int numLikers = likers.length();
-                        for (int i=0; i<numLikers; ++i) {
-                            JsonObject liker = likers.getJsonObject(i);
+                    if (post.has("status_type") == false || post.getString("status_type").equals("tagged_in_photo") == false) {
+                        if (post.has("likes") == true ) {
+                            JsonObject likes = post.getJsonObject("likes");
+                            JsonArray likers = likes.getJsonArray("data");
+                            int numLikers = likers.length();
+                            for (int i=0; i<numLikers; ++i) {
+                                JsonObject liker = likers.getJsonObject(i);
 
-                            if (liker.getString("id").equals(profileId)) {
-                                numFriendLikes += 1;
-                                break;
+                                if (liker.getString("id").equals(profileId)) {
+                                    numFriendLikes += 1;
+                                    break;
+                                }
                             }
                         }
                     }
