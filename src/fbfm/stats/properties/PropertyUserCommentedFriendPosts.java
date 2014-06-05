@@ -63,7 +63,7 @@ public class PropertyUserCommentedFriendPosts extends Stat{
         while (numOfPosts >= 0) {
             DebugUtility.println("offset is " + offset);
             String query = "Select post_id, source_id, comment_info FROM stream where source_id='" + profileId + "' "
-                           + "AND actor_id="+profileId+" AND likes.user_likes=1 LIMIT "+offset+ ","+(offset+offsetVar-1) ;
+                           + "AND actor_id='"+profileId+"' LIMIT "+offset+ ","+(offset+offsetVar-1) ;
             List<JsonObject> posts = facebookClient.executeFqlQuery(query, JsonObject.class);
             for (JsonObject post : posts) {
                 JsonObject commentInfo = post.getJsonObject("comment_info");

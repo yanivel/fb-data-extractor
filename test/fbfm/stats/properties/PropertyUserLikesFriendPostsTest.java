@@ -55,7 +55,7 @@ public class PropertyUserLikesFriendPostsTest {
         DebugUtility.setDebug(true);
          System.out.println("calculateStat");
         String accessToken = FacebookUtility.getAccessToken();
-        String profileId = "100004551300688"; 
+        String profileId = "100001531730648"; 
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         
         PropertyUserLikesFriendPosts instance = new PropertyUserLikesFriendPosts();
