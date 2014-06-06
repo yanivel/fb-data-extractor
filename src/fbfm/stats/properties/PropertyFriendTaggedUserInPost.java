@@ -6,6 +6,7 @@
 
 package fbfm.stats.properties;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.SetMultimap;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
@@ -26,10 +27,10 @@ import java.util.List;
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
-@StatInfo(name="Number times user commented on posts in friends's profile",
-          description="Number times user commented on friend posts in friends's profile.",
+@StatInfo(name="Number times friend tagged user in posts in friends's profile",
+          description="Number times friend tagged user in posts with certain amount of tags in friends's profile.",
           statType = StatType.PROPERTY)
-public class PropertyUserCommentedFriendPosts extends Stat{
+public class PropertyFriendTaggedUserInPost extends Stat{
 /** 
    *  The method that does the actual calculation. 
    *  Override this in derived classes for use.
@@ -40,7 +41,8 @@ public class PropertyUserCommentedFriendPosts extends Stat{
    */
     
     @StatParameters({
-        @StatParameters.RequiredParameter(name="profileId")
+        @StatParameters.RequiredParameter(name="profileId"),
+        @StatParameters.RequiredParameter(name="tagAmount")
     })
     @Override
     // TODO: add time limit to query 
@@ -48,6 +50,7 @@ public class PropertyUserCommentedFriendPosts extends Stat{
   {
       
     Collection<Object> params = parameters.get("profileId");
+    String tagAmount = Iterables.getFirst(parameters.get("tagAmount"), "").toString();
 
     StatResponse response = new StatResponse();
     
@@ -55,46 +58,53 @@ public class PropertyUserCommentedFriendPosts extends Stat{
     String userId = user.getId();
     
     int offsetVar = 500;
-    int userPostComments = 0;
     
     for (Object profileId : params) {
+        int userPostTags = 0;
         int offset = 0;
         int numOfPosts = 10000;
         while (numOfPosts >= 0) {
             DebugUtility.println("offset is " + offset);
-            String query = "Select post_id, source_id, comment_info FROM stream where source_id='" + profileId + "' "
+            String query = "Select post_id, tagged_ids, with_tags FROM stream where source_id='" + profileId + "' "
                            + "AND actor_id='"+profileId+"' LIMIT "+offset+ ","+(offset+offsetVar-1) ;
             List<JsonObject> posts = facebookClient.executeFqlQuery(query, JsonObject.class);
+            DebugUtility.println("found " + posts.size() + " posts for " + profileId);
             for (JsonObject post : posts) {
-                JsonObject commentInfo = post.getJsonObject("comment_info");
-                int commentCount = commentInfo.getInt("comment_count");
-                if (commentCount > 0) {
-                    String postId = post.getString("post_id");
-                    JsonObject commentConnection = facebookClient.fetchObject(postId+"/comments", JsonObject.class);
-                    JsonArray comments = commentConnection.getJsonArray("data");
-                    int numComments = comments.length();
-                    for (int i=0; i<numComments; ++i) {
-                        JsonObject comment = comments.getJsonObject(i);
-                        String commentatorId = comment.getJsonObject("from").getString("id");
-                        if (commentatorId.equals(userId)) {
-                            userPostComments += 1;
+                boolean foundUser = false;
+                if (post.has("with_tags") && foundUser == false) {
+                    JsonArray tags = post.getJsonArray("with_tags");
+                    int length = tags.length();
+                    for (int i=0; i<length; ++i) {
+                        String tag = tags.getString(i);
+                        if (tag.equals(userId)) {
                             DebugUtility.println(post);
+                            userPostTags++;
+                            foundUser = true;
+                            break;
                         }
                     }
-                    
-                    
                 }
-                
+                if (post.has("tagged_ids") && foundUser == false) {
+                    JsonArray tags = post.getJsonArray("tagged_ids");
+                    int length = tags.length();
+                    for (int i=0; i<length; ++i) {
+                        String tag = tags.getString(i);
+                        if (tag.equals(userId)) {
+                            DebugUtility.println(post);
+                            foundUser = true;
+                            userPostTags++;
+                            break;
+                        }
+                    }
+                }
             }
-            
-            
-      
+           
             offset += offsetVar;
             numOfPosts -= offsetVar;
         }
-        response.setValue(profileId.toString(),new StatValue<>(userPostComments, 0, 10000) );
-        userPostComments = 0;
+        response.setValue(profileId.toString(),new StatValue<>(userPostTags, 0, 10000) );
+        userPostTags = 0;
     }
     return response;
-  }   
+  }    
 }

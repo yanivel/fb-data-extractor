@@ -50,11 +50,11 @@ public class PropertyUserLikesFriendPosts extends Stat {
     StatResponse response = new StatResponse();
     
     int offsetVar = 500;
-    int numOfPosts = 10000;
     int userPostLikes = 0;
     
     for (Object profileId : params) {
         int offset = 0;
+        int numOfPosts = 10000;
         while (numOfPosts >= 0) {
             DebugUtility.println("offset is " + offset);
             String query = "Select post_id, source_id FROM stream where source_id='" + profileId + "' "

@@ -69,6 +69,7 @@ public class PropertyUserTaggedFriendInPost extends Stat{
             for (JsonObject post : myFeedConnectionPage) {
                 
                 JsonObject from = post.getJsonObject("from");
+                boolean foundUser = false;
                 if (from.getString("id").equals(userId)) {
                     // if this post is user tagged in other people's photo and shows as post
                     if (post.has("status_type") == false || post.getString("status_type").equals("tagged_in_photo") == false) {
@@ -77,7 +78,7 @@ public class PropertyUserTaggedFriendInPost extends Stat{
                             Iterator<?> messageTagsObjKeys = messageTagsObj.keys();
                             DebugUtility.println(messageTagsObj);
                             DebugUtility.println(post);
-                            while (messageTagsObjKeys.hasNext()) {
+                            while (messageTagsObjKeys.hasNext() && foundUser == false) {
                                 String key = messageTagsObjKeys.next().toString();
                                 JsonArray messageTagsArrayForKey = messageTagsObj.getJsonArray(key);
                                 int length = messageTagsArrayForKey.length();
@@ -87,12 +88,14 @@ public class PropertyUserTaggedFriendInPost extends Stat{
                                     
                                     if (tag.getString("id").equals(profileId)) {
                                         numFriendTags += 1;
+                                        foundUser = true;
                                         break;
                                     }
                                 }
                                 
                             }
-                        } else if (post.has("with_tags") == true) {
+                        } 
+                        if (post.has("with_tags") == true && foundUser == false) {
                             JsonObject withTagsObj = post.getJsonObject("with_tags");
                             JsonArray withTags = withTagsObj.getJsonArray("data");
                             DebugUtility.println(withTagsObj);
@@ -103,6 +106,7 @@ public class PropertyUserTaggedFriendInPost extends Stat{
                                 
                                 if (tag.getString("id").equals(profileId)) {
                                     numFriendTags += 1;
+                                    foundUser = true;
                                     break;
                                 }
                             }
