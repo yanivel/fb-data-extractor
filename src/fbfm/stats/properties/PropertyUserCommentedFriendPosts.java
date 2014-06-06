@@ -62,29 +62,22 @@ public class PropertyUserCommentedFriendPosts extends Stat{
         int numOfPosts = 10000;
         while (numOfPosts >= 0) {
             DebugUtility.println("offset is " + offset);
-            String query = "Select post_id, source_id, comment_info FROM stream where source_id='" + profileId + "' "
-                           + "AND actor_id='"+profileId+"' LIMIT "+offset+ ","+(offset+offsetVar-1) ;
+            String query = "Select post_id, comment_info FROM stream where source_id='" + profileId + "' "
+                           + "AND actor_id='"+profileId+"' AND comment_info.comment_count>0 LIMIT "+offset+ ","+(offset+offsetVar-1) ;
             List<JsonObject> posts = facebookClient.executeFqlQuery(query, JsonObject.class);
             for (JsonObject post : posts) {
-                JsonObject commentInfo = post.getJsonObject("comment_info");
-                int commentCount = commentInfo.getInt("comment_count");
-                if (commentCount > 0) {
-                    String postId = post.getString("post_id");
-                    JsonObject commentConnection = facebookClient.fetchObject(postId+"/comments", JsonObject.class);
-                    JsonArray comments = commentConnection.getJsonArray("data");
-                    int numComments = comments.length();
-                    for (int i=0; i<numComments; ++i) {
-                        JsonObject comment = comments.getJsonObject(i);
-                        String commentatorId = comment.getJsonObject("from").getString("id");
-                        if (commentatorId.equals(userId)) {
-                            userPostComments += 1;
-                            DebugUtility.println(post);
-                        }
+                String postId = post.getString("post_id");
+                JsonObject commentConnection = facebookClient.fetchObject(postId+"/comments", JsonObject.class);
+                JsonArray comments = commentConnection.getJsonArray("data");
+                int numComments = comments.length();
+                for (int i=0; i<numComments; ++i) {
+                    JsonObject comment = comments.getJsonObject(i);
+                    String commentatorId = comment.getJsonObject("from").getString("id");
+                    if (commentatorId.equals(userId)) {
+                        userPostComments += 1;
+                        DebugUtility.println(post);
                     }
-                    
-                    
                 }
-                
             }
             
             

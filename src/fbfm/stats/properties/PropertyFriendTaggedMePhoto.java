@@ -86,13 +86,21 @@ public class PropertyFriendTaggedMePhoto extends Stat{
                 for (String photoId : photoIds) {
                     // get photo tags
                     DebugUtility.println("getting tags for photo : " + photoId);
-
+                    JsonArray photoTags = null;
                     try {
-                        JsonObject photoTagsConnection = facebookClient.fetchObject(photoId+"/tags", JsonObject.class,
-                                                                        Parameter.with("fields", "tagging_user"));
-
-                        JsonArray photoTags = photoTagsConnection.getJsonArray("data");
-                        DebugUtility.println("finished reading photo tags, total tags for photo is : " + photoTags.length());
+                        if (cache.hasCacheData(userId, "photoTags", photoId)) {
+                            Map<Object, Object> tags = cache.getCacheData(userId, "photoTags", photoId);
+                            photoTags = (JsonArray)tags.get("photoTags");
+                            DebugUtility.println("got photo tags for user " + userId + " from cache.");
+                        } else {
+                            JsonObject photoTagsConnection = facebookClient.fetchObject(photoId+"/tags", JsonObject.class,
+                                                                            Parameter.with("fields", "tagging_user"));
+                            photoTags = photoTagsConnection.getJsonArray("data");
+                            cache.addUserCacheData(userId, "photoTags", photoId, "tags", photoTags);
+                            DebugUtility.println("got photo tags live data. added photos tags for user " + userId + " in key 'photoTags'.");
+                        }
+                        
+                        DebugUtility.println("total tags for photo " + photoId + " is : " + photoTags.length());
                         int numTags = photoTags.length();
                         for (int i=0; i<numTags; ++i) {
                             DebugUtility.println("running on tag " + i);
