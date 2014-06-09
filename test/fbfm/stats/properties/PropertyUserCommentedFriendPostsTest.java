@@ -55,7 +55,7 @@ public class PropertyUserCommentedFriendPostsTest {
         DebugUtility.setDebug(true);
          System.out.println("calculateStat");
         String accessToken = FacebookUtility.getAccessToken();
-        String profileId = "1069036242"; 
+        String profileId = "100004551300688";  // noa
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         
         PropertyUserCommentedFriendPosts instance = new PropertyUserCommentedFriendPosts();

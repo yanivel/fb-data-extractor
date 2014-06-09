@@ -14,6 +14,7 @@ import fbfm.stats.properties.PropertyUserTaggedFriendInPost;
 import fbfm.util.DebugUtility;
 import fbfm.util.StatUtility;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.After;
@@ -90,16 +91,22 @@ public class StatExtractorTest {
     /**
      * Test of extract method, of class StatExtractor.
      */
-    @Test
+    //@Test
     public void testExtractNoa() {
-        System.out.println("extract noa");
+        System.out.println("extract friends");
         StatExtractor extractor = new StatExtractor();
         extractor.setUser("786753874");
         Set<Class<?>> stats = StatUtility.getAvailableStats();
         extractor.setStats(stats);
         extractor.setTimeout(100);
         List<String> profiles = new ArrayList();
-        profiles.add("100004551300688");
+        profiles.add("100004551300688"); // noa gat
+        //profiles.add("1467285958"); // dana elimor
+        //profiles.add("100001531730648"); // valery sigal
+        //profiles.add("100001558392789"); // valerie mangoni
+        //profiles.add("1649032575"); // kiril ragchevsky
+        //profiles.add("667859533"); // nadav katz
+        //profiles.add("1069036242"); // nati levin
         
         extractor.setProfileIds(profiles);
         
@@ -120,4 +127,47 @@ public class StatExtractorTest {
         //fail("The test case is a prototype.");
     }
     
+    
+     /**
+     * Test of extract method, of class StatExtractor.
+     */
+    @Test
+    public void testExtractPhotos() {
+        System.out.println("extract my photos taggers");
+        StatExtractor extractor = new StatExtractor();
+        extractor.setUser("786753874");
+        
+        Set<Class<?>> a = new HashSet<>();
+        a.add(PropertyFriendTaggedMePhoto.class);
+            
+        //Set<Class<?>> stats = StatUtility.getAvailableStats();
+        extractor.setStats(a);
+        extractor.setTimeout(100);
+        List<String> profiles = new ArrayList();
+        profiles.add("100004551300688"); // noa gat
+        profiles.add("1467285958"); // dana elimor
+        profiles.add("100001531730648"); // valery sigal
+        profiles.add("100001558392789"); // valerie mangoni
+        profiles.add("1649032575"); // kiril ragchevsky
+        profiles.add("667859533"); // nadav katz
+        profiles.add("1069036242"); // nati levin
+        
+        extractor.setProfileIds(profiles);
+        
+        extractor.addParameter(PropertyFriendTaggedMePhoto.class, "tagAmount", "20");
+        //extractor.addParameter(PropertyMeTaggedFriendPhoto.class, "tagAmount", "20");
+        //extractor.addParameter(PropertyPrivateMessages.class, "timePeriod", "20");
+        //extractor.addParameter(PropertyFriendTaggedUserInPost.class, "tagAmount", "20");
+        //extractor.addParameter(PropertyUserTaggedFriendInPost.class, "tagAmount", "20");
+        
+        DebugUtility.setDebug(true);
+        extractor.extract();
+        extractor.printToConsole();
+        extractor.saveToCSVFile("myphototaggers.csv");
+        //boolean expResult = false;
+        //boolean result = extractor.extract();
+        //assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
+    }
 }

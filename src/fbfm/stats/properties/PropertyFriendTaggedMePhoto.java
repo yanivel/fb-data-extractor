@@ -90,7 +90,7 @@ public class PropertyFriendTaggedMePhoto extends Stat{
                     try {
                         if (cache.hasCacheData(userId, "photoTags", photoId)) {
                             Map<Object, Object> tags = cache.getCacheData(userId, "photoTags", photoId);
-                            photoTags = (JsonArray)tags.get("photoTags");
+                            photoTags = (JsonArray)tags.get("tags");
                             DebugUtility.println("got photo tags for user " + userId + " from cache.");
                         } else {
                             JsonObject photoTagsConnection = facebookClient.fetchObject(photoId+"/tags", JsonObject.class,
@@ -122,8 +122,9 @@ public class PropertyFriendTaggedMePhoto extends Stat{
 
                     DebugUtility.println("finished photo : " + photoId);
                 }
+                
+                cache.addUserCacheData(userId, "photoTaggers", friendId, "numTags", tagCounter);
             }
-            cache.addUserCacheData(userId, "photoTaggers", friendId, "numTags", tagCounter);
         }
         response.setValue(friendId.toString(), new StatValue<>(tagCounter,0,100000) );
     }
