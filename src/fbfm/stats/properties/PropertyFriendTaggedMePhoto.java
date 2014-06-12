@@ -88,15 +88,15 @@ public class PropertyFriendTaggedMePhoto extends Stat{
                     DebugUtility.println("getting tags for photo : " + photoId);
                     JsonArray photoTags = null;
                     try {
-                        if (cache.hasCacheData(userId, "photoTags", photoId)) {
-                            Map<Object, Object> tags = cache.getCacheData(userId, "photoTags", photoId);
-                            photoTags = (JsonArray)tags.get("tags");
+                        if (cache.hasCacheData(userId, "photoTaggers", photoId)) {
+                            Map<Object, Object> tags = cache.getCacheData(userId, "photoTaggers", photoId);
+                            photoTags = (JsonArray)tags.get("taggers");
                             DebugUtility.println("got photo tags for user " + userId + " from cache.");
                         } else {
                             JsonObject photoTagsConnection = facebookClient.fetchObject(photoId+"/tags", JsonObject.class,
                                                                             Parameter.with("fields", "tagging_user"));
                             photoTags = photoTagsConnection.getJsonArray("data");
-                            cache.addUserCacheData(userId, "photoTags", photoId, "tags", photoTags);
+                            cache.addUserCacheData(userId, "photoTags", photoId, "taggers", photoTags);
                             DebugUtility.println("got photo tags live data. added photos tags for user " + userId + " in key 'photoTags'.");
                         }
                         

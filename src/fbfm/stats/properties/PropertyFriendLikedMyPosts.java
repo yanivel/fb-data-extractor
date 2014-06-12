@@ -57,9 +57,9 @@ public class PropertyFriendLikedMyPosts extends Stat{
     User user = facebookClient.fetchObject("me", User.class, Parameter.with("fields", "id"));
     String userId = user.getId();
     
+     Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "likes,from,status_type"));
+    
     for (Object profileId : params) {     
-        
-        Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "likes,from,status_type"));
 
         for (List<JsonObject> myFeedConnectionPage : myFeed) {
             for (JsonObject post : myFeedConnectionPage) {

@@ -57,10 +57,10 @@ public class PropertyFriendCommentedMyPosts extends Stat{
     
     int numFriendComments = 0;
  
+    Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "comments,from,status_type"));
+    
     for (Object profileId : params) {     
         
-        Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "comments,from,status_type"));
-
         for (List<JsonObject> myFeedConnectionPage : myFeed) {
             for (JsonObject post : myFeedConnectionPage) {
                 
