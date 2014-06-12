@@ -100,13 +100,13 @@ public class StatExtractorTest {
         extractor.setStats(stats);
         extractor.setTimeout(100);
         List<String> profiles = new ArrayList();
-        //profiles.add("100004551300688"); // noa gat
-        //profiles.add("1467285958"); // dana elimor
-        //profiles.add("100001531730648"); // valery sigal
+        profiles.add("100004551300688"); // noa gat
+        profiles.add("1467285958"); // dana elimor
+        profiles.add("100001531730648"); // valery sigal
         //profiles.add("100001558392789"); // valerie mangoni
         //profiles.add("1649032575"); // kiril ragchevsky
         //profiles.add("667859533"); // nadav katz
-        profiles.add("1069036242"); // nati levin
+        //profiles.add("1069036242"); // nati levin
         
         extractor.setProfileIds(profiles);
         
@@ -119,7 +119,7 @@ public class StatExtractorTest {
         DebugUtility.setDebug(true);
         extractor.extract();
         extractor.printToConsole();
-        extractor.saveToCSVFile("nati.csv");
+        extractor.saveToCSVFile("noa_dana_valery.csv");
         //boolean expResult = false;
         //boolean result = extractor.extract();
         //assertEquals(expResult, result);
