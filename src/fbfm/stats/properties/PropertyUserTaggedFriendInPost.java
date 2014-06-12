@@ -20,10 +20,14 @@ import fbfm.StatParameters;
 import fbfm.StatResponse;
 import fbfm.StatType;
 import fbfm.StatValue;
+import fbfm.util.CacheUtility;
 import fbfm.util.DebugUtility;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -60,66 +64,120 @@ public class PropertyUserTaggedFriendInPost extends Stat{
     String userId = user.getId();
     
     int numFriendTags = 0;
+    CacheUtility cache = CacheUtility.getInstance();
  
     for (Object profileId : params) {     
-        
-        Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "from,message_tags,with_tags,status_type"));
-
-        for (List<JsonObject> myFeedConnectionPage : myFeed) {
-            for (JsonObject post : myFeedConnectionPage) {
-                
-                JsonObject from = post.getJsonObject("from");
+        Set<JsonObject> postsWithTagsSet;
+        // if cache
+        if (cache.hasCacheData(userId, "postsWithTags", "Sets")) {
+            Map<Object, Object> sharedPostsSets = cache.getCacheData(userId, "postsWithTags", "Sets");
+            postsWithTagsSet = (Set<JsonObject>)sharedPostsSets.get("postsWithTagsJsonObjects");
+            
+            for (JsonObject post : postsWithTagsSet) {
                 boolean foundUser = false;
-                if (from.getString("id").equals(userId)) {
-                    // if this post is user tagged in other people's photo and shows as post
-                    if (post.has("status_type") == false || post.getString("status_type").equals("tagged_in_photo") == false) {
-                        if (post.has("message_tags") == true ) {
-                            JsonObject messageTagsObj = post.getJsonObject("message_tags");
-                            Iterator<?> messageTagsObjKeys = messageTagsObj.keys();
-                            DebugUtility.println(messageTagsObj);
-                            DebugUtility.println(post);
-                            while (messageTagsObjKeys.hasNext() && foundUser == false) {
-                                String key = messageTagsObjKeys.next().toString();
-                                JsonArray messageTagsArrayForKey = messageTagsObj.getJsonArray(key);
-                                int length = messageTagsArrayForKey.length();
-                                
-                                for (int i=0; i<length; ++i) {
-                                    JsonObject tag = messageTagsArrayForKey.getJsonObject(i);
-                                    
+                
+                if (post.has("message_tags") == true ) {
+                    JsonObject messageTagsObj = post.getJsonObject("message_tags");
+                    Iterator<?> messageTagsObjKeys = messageTagsObj.keys();
+                    DebugUtility.println(messageTagsObj);
+                    DebugUtility.println(post);
+                    while (messageTagsObjKeys.hasNext() && foundUser == false) {
+                        String key = messageTagsObjKeys.next().toString();
+                        JsonArray messageTagsArrayForKey = messageTagsObj.getJsonArray(key);
+                        int length = messageTagsArrayForKey.length();
+
+                        for (int i=0; i<length; ++i) {
+                            JsonObject tag = messageTagsArrayForKey.getJsonObject(i);
+
+                            if (tag.getString("id").equals(profileId)) {
+                                numFriendTags += 1;
+                                foundUser = true;
+                                break;
+                            }
+                        }
+
+                    }
+                } 
+                if (post.has("with_tags") == true && foundUser == false) {
+                    JsonObject withTagsObj = post.getJsonObject("with_tags");
+                    JsonArray withTags = withTagsObj.getJsonArray("data");
+                    DebugUtility.println(withTagsObj);
+                    int numTags = withTags.length();
+                    // if (numTags <= tagAmount)
+                    for (int i=0; i<numTags; ++i) {
+                        JsonObject tag = withTags.getJsonObject(i);
+
+                        if (tag.getString("id").equals(profileId)) {
+                            numFriendTags += 1;
+                            foundUser = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        // else no cache yet
+        } else {
+            postsWithTagsSet = new HashSet<>();
+            Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "from,message_tags,with_tags,status_type"));
+
+            for (List<JsonObject> myFeedConnectionPage : myFeed) {
+                for (JsonObject post : myFeedConnectionPage) {
+
+                    JsonObject from = post.getJsonObject("from");
+                    boolean foundUser = false;
+                    if (from.getString("id").equals(userId)) {
+                        // if this post is user tagged in other people's photo and shows as post
+                        if (post.has("status_type") == false || post.getString("status_type").equals("tagged_in_photo") == false) {
+                            postsWithTagsSet.add(post);
+                            if (post.has("message_tags") == true ) {
+                                JsonObject messageTagsObj = post.getJsonObject("message_tags");
+                                Iterator<?> messageTagsObjKeys = messageTagsObj.keys();
+                                DebugUtility.println(messageTagsObj);
+                                DebugUtility.println(post);
+                                while (messageTagsObjKeys.hasNext() && foundUser == false) {
+                                    String key = messageTagsObjKeys.next().toString();
+                                    JsonArray messageTagsArrayForKey = messageTagsObj.getJsonArray(key);
+                                    int length = messageTagsArrayForKey.length();
+
+                                    for (int i=0; i<length; ++i) {
+                                        JsonObject tag = messageTagsArrayForKey.getJsonObject(i);
+
+                                        if (tag.getString("id").equals(profileId)) {
+                                            numFriendTags += 1;
+                                            foundUser = true;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            } 
+                            if (post.has("with_tags") == true && foundUser == false) {
+                                JsonObject withTagsObj = post.getJsonObject("with_tags");
+                                JsonArray withTags = withTagsObj.getJsonArray("data");
+                                DebugUtility.println(withTagsObj);
+                                int numTags = withTags.length();
+                                // if (numTags <= tagAmount)
+                                for (int i=0; i<numTags; ++i) {
+                                    JsonObject tag = withTags.getJsonObject(i);
+
                                     if (tag.getString("id").equals(profileId)) {
                                         numFriendTags += 1;
                                         foundUser = true;
                                         break;
                                     }
                                 }
-                                
-                            }
-                        } 
-                        if (post.has("with_tags") == true && foundUser == false) {
-                            JsonObject withTagsObj = post.getJsonObject("with_tags");
-                            JsonArray withTags = withTagsObj.getJsonArray("data");
-                            DebugUtility.println(withTagsObj);
-                            int numTags = withTags.length();
-                            // if (numTags <= tagAmount)
-                            for (int i=0; i<numTags; ++i) {
-                                JsonObject tag = withTags.getJsonObject(i);
-                                
-                                if (tag.getString("id").equals(profileId)) {
-                                    numFriendTags += 1;
-                                    foundUser = true;
-                                    break;
-                                }
                             }
                         }
                     }
+
+
                 }
-                
-                
             }
         }
-        
         response.setValue(profileId.toString(),new StatValue<>(numFriendTags, 0, 100000) );
         numFriendTags = 0;
+        cache.addUserCacheData(userId, "postsWithTags", "Sets", "postsWithTagsJsonObjects", postsWithTagsSet);
+
     }
     return response;
   }
