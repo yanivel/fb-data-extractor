@@ -96,7 +96,7 @@ public class PropertyFriendTaggedMePhoto extends Stat{
                             JsonObject photoTagsConnection = facebookClient.fetchObject(photoId+"/tags", JsonObject.class,
                                                                             Parameter.with("fields", "tagging_user"));
                             photoTags = photoTagsConnection.getJsonArray("data");
-                            cache.addUserCacheData(userId, "photoTags", photoId, "taggers", photoTags);
+                            cache.addUserCacheData(userId, "photoTaggers", photoId, "taggers", photoTags);
                             DebugUtility.println("got photo tags live data. added photos tags for user " + userId + " in key 'photoTags'.");
                         }
                         

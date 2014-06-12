@@ -65,7 +65,7 @@ public class PropertyFriendTaggedUserInPost extends Stat{
         int numOfPosts = 10000;
         while (numOfPosts >= 0) {
             DebugUtility.println("offset is " + offset);
-            String query = "Select post_id, tagged_ids, with_tags FROM stream where source_id='" + profileId + "' "
+            String query = "Select tagged_ids, with_tags FROM stream where source_id='" + profileId + "' "
                            + "AND actor_id='"+profileId+"' LIMIT "+offset+ ","+(offset+offsetVar-1) ;
             List<JsonObject> posts = facebookClient.executeFqlQuery(query, JsonObject.class);
             DebugUtility.println("found " + posts.size() + " posts for " + profileId);

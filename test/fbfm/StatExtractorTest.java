@@ -119,7 +119,7 @@ public class StatExtractorTest {
         DebugUtility.setDebug(true);
         extractor.extract();
         extractor.printToConsole();
-        extractor.saveToCSVFile("noa_dana_valery.csv");
+        extractor.saveToCSVFile("noa_dana_valery_optimized.csv");
         //boolean expResult = false;
         //boolean result = extractor.extract();
         //assertEquals(expResult, result);
