@@ -64,8 +64,14 @@ public class PropertyUserCommentedFriendPosts extends Stat{
             DebugUtility.println("offset is " + offset);
             String query = "Select post_id FROM stream where source_id='" + profileId + "' "
                            + "AND actor_id='"+profileId+"' "
-                           + /*AND comment_info.comment_count>0*/ " LIMIT "+offset+ ","+(offset+offsetVar-1) ;
+                           + "AND comment_info.comment_count>0 LIMIT "+offset+ ","+(offset+offsetVar-1) ;
             List<JsonObject> posts = facebookClient.executeFqlQuery(query, JsonObject.class);
+            
+            // no posts, so don't continue
+            if (posts.isEmpty()) {
+                break;
+            }
+            
             for (JsonObject post : posts) {
                 String postId = post.getString("post_id");
                 JsonObject commentConnection = facebookClient.fetchObject(postId+"/comments", JsonObject.class, 

@@ -19,9 +19,13 @@ import fbfm.StatParameters;
 import fbfm.StatResponse;
 import fbfm.StatType;
 import fbfm.StatValue;
+import fbfm.util.CacheUtility;
 import fbfm.util.DebugUtility;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -58,36 +62,59 @@ public class PropertyFriendCommentedMyPosts extends Stat{
     int numFriendComments = 0;
  
     Connection<JsonObject> myFeed = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("fields", "comments,from,status_type"));
+    CacheUtility cache = CacheUtility.getInstance();
     
     for (Object profileId : params) {     
+        Set<JsonObject> postsWithComments;
         
-        for (List<JsonObject> myFeedConnectionPage : myFeed) {
-            for (JsonObject post : myFeedConnectionPage) {
-                
-                JsonObject from = post.getJsonObject("from");
-                if (from.getString("id").equals(userId)) {
-                    if (post.has("status_type") == false || post.getString("status_type").equals("tagged_in_photo") == false) {
-                        if (post.has("comments") == true ) {
-                            JsonObject commentsObj = post.getJsonObject("comments");
-                            JsonArray comments = commentsObj.getJsonArray("data");
-                            int numComments = comments.length();
-                            for (int i=0; i<numComments; ++i) {
-                                JsonObject comment = comments.getJsonObject(i);
+        if (cache.hasCacheData(userId, "postsWithComments", "Sets")) {
+            Map<Object, Object> likedPostsSets = cache.getCacheData(userId, "postsWithComments", "Sets");
+            postsWithComments = (Set<JsonObject>)likedPostsSets.get("postsWithCommentsJsonObjects");
+            
+            for (JsonObject post : postsWithComments) {
+                JsonObject commentsObj = post.getJsonObject("comments");
+                JsonArray comments = commentsObj.getJsonArray("data");
+                int numComments = comments.length();
+                for (int i=0; i<numComments; ++i) {
+                    JsonObject comment = comments.getJsonObject(i);
 
-                                JsonObject commentFrom = comment.getJsonObject("from");
-                                if (commentFrom.getString("id").equals(profileId)) {
-                                    numFriendComments += 1;
-                                    break;
+                    JsonObject commentFrom = comment.getJsonObject("from");
+                    if (commentFrom.getString("id").equals(profileId)) {
+                        numFriendComments += 1;
+                        break;
+                    }
+                }
+            }
+        } else {
+            postsWithComments = new HashSet<JsonObject>();
+            for (List<JsonObject> myFeedConnectionPage : myFeed) {
+                for (JsonObject post : myFeedConnectionPage) {
+
+                    JsonObject from = post.getJsonObject("from");
+                    if (from.getString("id").equals(userId)) {
+                        if (post.has("status_type") == false || post.getString("status_type").equals("tagged_in_photo") == false) {
+                            if (post.has("comments") == true ) {
+                                postsWithComments.add(post);
+                                JsonObject commentsObj = post.getJsonObject("comments");
+                                JsonArray comments = commentsObj.getJsonArray("data");
+                                int numComments = comments.length();
+                                for (int i=0; i<numComments; ++i) {
+                                    JsonObject comment = comments.getJsonObject(i);
+
+                                    JsonObject commentFrom = comment.getJsonObject("from");
+                                    if (commentFrom.getString("id").equals(profileId)) {
+                                        numFriendComments += 1;
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
+
                 }
-                
-                
             }
+            cache.addUserCacheData(userId, "postsWithComments", "Sets", "postsWithCommentsJsonObjects", postsWithComments);
         }
-        
         response.setValue(profileId.toString(),new StatValue<>(numFriendComments, 0, 100000) );
         numFriendComments = 0;
     }

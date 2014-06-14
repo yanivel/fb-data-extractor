@@ -6,15 +6,25 @@
 
 package fbfm.util;
 
+import com.google.common.base.Joiner;
+import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
+import com.restfb.Parameter;
+import com.restfb.types.User;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
 public class FacebookUtility {
-    static protected String facebookAccessToken = "CAACEdEose0cBAAzAzXwvUssB5uCBEJUtWfctRPBBkLBF15XADYhPLVFAXWTwu1BnHMoqd1jPC6iy3pVLYFZBr5Mc87VdIqZCO3Xi2ZCjbAhIvVZBbXFGL4neWn8YxmOAhdBjQ5ezFwPoDHQcMejt5ctr2XrcgsGtZAoSGs1JDafOx769yMHoTgDAm1eJCJdL4t7Ei6llD3wZDZD";
+    static protected String facebookAccessToken = "CAACEdEose0cBAIMSsFnKIijIUk545CB9GjwkKq3yXJd1rLHKPefygjhJ3qDpLtBpUu1g3KPB9qWe0LO0js4iL5lNzZAEjsZCGpg3emDUWLAFi7XpLZAn2HZAsl6upejZCqyq0cFQTfftW9Ovt2iGGD20DavqMeoKvlqkdZAmzdqRPJKCZCkpLga7J0yU26aCzR1VSyxUXjasgZDZD";
     
     static protected FacebookClient facebookClient = null;
     
@@ -32,6 +42,32 @@ public class FacebookUtility {
         }
         
         return FacebookUtility.facebookClient;
+    }
+    
+    public static int AllFriendsToCSV(String filename) {
+        FacebookClient client = FacebookUtility.getFacebookClient();
+        
+        Connection<User> friends = client.fetchConnection("me/friends", User.class, Parameter.with("fields", "id,name"));
+        
+        int numFriends = 0;
+        try
+	{
+	    FileWriter writer = new FileWriter(filename);
+          
+            for (List<User> friendList : friends) {
+                for (User friend : friendList) {
+                    numFriends++;
+                    writer.append(friend.getId()+ "," + friend.getName() + "\n");
+                }
+            }
+            writer.flush();
+	    writer.close();
+	}catch(IOException e)
+	{
+	     e.printStackTrace();
+	}
+        
+        return numFriends;
     }
     
 }

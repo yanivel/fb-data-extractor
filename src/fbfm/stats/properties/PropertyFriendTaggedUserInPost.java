@@ -69,6 +69,12 @@ public class PropertyFriendTaggedUserInPost extends Stat{
                            + "AND actor_id='"+profileId+"' LIMIT "+offset+ ","+(offset+offsetVar-1) ;
             List<JsonObject> posts = facebookClient.executeFqlQuery(query, JsonObject.class);
             DebugUtility.println("found " + posts.size() + " posts for " + profileId);
+            
+            // no posts, so don't continue
+            if (posts.isEmpty()) {
+                break;
+            }
+            
             for (JsonObject post : posts) {
                 boolean foundUser = false;
                 if (post.has("with_tags") && foundUser == false) {
@@ -98,9 +104,10 @@ public class PropertyFriendTaggedUserInPost extends Stat{
                     }
                 }
             }
-           
+ 
             offset += offsetVar;
             numOfPosts -= offsetVar;
+
         }
         response.setValue(profileId.toString(),new StatValue<>(userPostTags, 0, 10000) );
         userPostTags = 0;

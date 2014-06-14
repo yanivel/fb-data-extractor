@@ -173,10 +173,11 @@ public class PropertyUserTaggedFriendInPost extends Stat{
 
                 }
             }
+            cache.addUserCacheData(userId, "postsWithTags", "Sets", "postsWithTagsJsonObjects", postsWithTagsSet);
         }
         response.setValue(profileId.toString(),new StatValue<>(numFriendTags, 0, 100000) );
         numFriendTags = 0;
-        cache.addUserCacheData(userId, "postsWithTags", "Sets", "postsWithTagsJsonObjects", postsWithTagsSet);
+        
 
     }
     return response;

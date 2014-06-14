@@ -60,6 +60,11 @@ public class PropertyUserLikesFriendPosts extends Stat {
             String query = "Select post_id FROM stream where source_id='" + profileId + "' "
                            + "AND actor_id="+profileId+" AND like_info.user_likes=1 LIMIT "+offset+ ","+(offset+offsetVar-1) ;
             List<JsonObject> postsCount = facebookClient.executeFqlQuery(query, JsonObject.class);
+            
+            if (postsCount.isEmpty()) {
+                break;
+            }
+            
             DebugUtility.println("number of posts likes by user: " + postsCount.size());
             if (!postsCount.isEmpty()) {
                 userPostLikes += postsCount.size();

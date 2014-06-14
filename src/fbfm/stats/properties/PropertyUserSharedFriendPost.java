@@ -122,11 +122,11 @@ public class PropertyUserSharedFriendPost extends Stat{
                     }
                 }
             }
-            
+            cache.addUserCacheData(userId, "sharedPosts", "Sets", "sharedPostsJsonObjects", sharedPostSet);
         }
         response.setValue(profileId.toString(),new StatValue<>(numShares, 0, 100000) );
         numShares = 0;
-        cache.addUserCacheData(userId, "sharedPosts", "Sets", "sharedPostsJsonObjects", sharedPostSet);
+        
     }
     return response;
   }
