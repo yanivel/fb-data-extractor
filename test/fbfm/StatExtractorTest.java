@@ -257,7 +257,7 @@ public class StatExtractorTest {
         System.out.println("extracting..");  
         extractor.extract();
         extractor.printToConsole();
-        System.out.println("finished. saving to " + filename + ".csv");
+        System.out.println("finished. saving to " + fileName + ".csv");
         extractor.saveToCSVFile(fileName + ".csv");
         System.out.println("file saved.");
     }
