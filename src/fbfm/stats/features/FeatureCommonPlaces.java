@@ -83,18 +83,36 @@ public class FeatureCommonPlaces extends Stat{
     // we got here so we have userPlaces set with user places ids in it
     // now get the friends' check-ins and places
     
-    
     for (Object profileId : params) {
         Set<String> profilePlaces = new HashSet<String>();
+        Set<String> locations = new HashSet<String>();
+        // locations gives same locations after a while so we will have to end it
+        boolean end = false;
         // same as for user but without caching
         Connection<JsonObject> profileLocationConnection = facebookClient.fetchConnection(profileId.toString()+"/locations", JsonObject.class, Parameter.with("fields", "place"));
         for (List<JsonObject> profileLocationConnectionPage : profileLocationConnection) {
             for (JsonObject location : profileLocationConnectionPage) {
- 
+                String locationId = location.getString("id");
+                if (locations.contains(locationId)) {
+                    end = true;
+                    break;
+                }
+                locations.add(locationId);
+                DebugUtility.println("running on location: " + location);
                 if (location.has("place")) { // add the place id (place is actually a page of a place)
-                    profilePlaces.add(location.getJsonObject("place").getString("id"));
+                    String id = location.getJsonObject("place").getString("id");
+                    if (profilePlaces.contains(id)) {
+                        end = true;
+                        break;
+                    }
+                    profilePlaces.add(id);
+                    DebugUtility.println("found place: " + location.getJsonObject("place").getString("id"));
                 }
   
+            }
+            
+            if (end == true) {
+                break;
             }
         }
         

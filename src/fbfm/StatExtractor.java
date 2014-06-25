@@ -156,6 +156,7 @@ public class StatExtractor {
                     // TODO: need here something??
                 }
             }
+            System.out.println("finished results for "+profileId);
         }
         
         return true;

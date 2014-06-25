@@ -97,21 +97,17 @@ public class StatExtractorTest {
      * Test of extract method, of class StatExtractor.
      */
     //@Test
-    public void testExtractNoa() {
-        System.out.println("extract friends");
+    public void testExtractLeftOvers() {
+        System.out.println("testExtractLeftOvers");
         StatExtractor extractor = new StatExtractor();
         extractor.setUser("786753874");
-        Set<Class<?>> stats = StatUtility.getAvailableStats();
+        Set<Class<?>> stats = StatUtility.getAvailableProperties();
         extractor.setStats(stats);
         extractor.setTimeout(100);
         List<String> profiles = new ArrayList();
-        profiles.add("100004551300688"); // noa gat
-        profiles.add("1467285958"); // dana elimor
-        profiles.add("100001531730648"); // valery sigal
-        //profiles.add("100001558392789"); // valerie mangoni
-        //profiles.add("1649032575"); // kiril ragchevsky
-        //profiles.add("667859533"); // nadav katz
-        //profiles.add("1069036242"); // nati levin
+        profiles.add("1530644608"); 
+        profiles.add("1016028958"); 
+        profiles.add("1052618348"); 
         
         extractor.setProfileIds(profiles);
         
@@ -121,10 +117,10 @@ public class StatExtractorTest {
         extractor.addParameter(PropertyFriendTaggedUserInPost.class, "tagAmount", "20");
         extractor.addParameter(PropertyUserTaggedFriendInPost.class, "tagAmount", "20");
         
-        DebugUtility.setDebug(true);
+        DebugUtility.setDebug(false);
         extractor.extract();
         extractor.printToConsole();
-        extractor.saveToCSVFile("noa_dana_valery_optimized2.csv");
+        extractor.saveToCSVFile("left_overs.csv");
         //boolean expResult = false;
         //boolean result = extractor.extract();
         //assertEquals(expResult, result);
@@ -180,10 +176,11 @@ public class StatExtractorTest {
     /**
      * Test of extract method, of class StatExtractor.
      */
-    @Test
+    //@Test
+    //deprecated
     public void testExtractFriendsProperties() {
         
-        int friendsPerRun = 5;
+        int friendsPerRun = 40;
         System.out.println("extract friends");
         StatExtractor extractor = new StatExtractor();
         extractor.setUser("786753874");
@@ -259,6 +256,88 @@ public class StatExtractorTest {
         extractor.printToConsole();
         System.out.println("finished. saving to " + fileName + ".csv");
         extractor.saveToCSVFile(fileName + ".csv");
+        System.out.println("file saved.");
+    }
+    
+    /**
+     * Test of extract method, of class StatExtractor.
+     */
+    @Test
+    public void testExtractFeatures() {
+        int starting = 701;
+        int friendsPerRun = 100;
+        int finishing = starting + friendsPerRun - 1;
+        System.out.println("extract friends");
+        StatExtractor extractor = new StatExtractor();
+        extractor.setUser("786753874");
+        System.out.println("set stats to be all features.");
+        Set<Class<?>> stats = StatUtility.getAvailableFeatures();
+        extractor.setStats(stats);
+        System.out.println("set timeout between calls to 100ms.");
+        extractor.setTimeout(100);
+        List<String> profiles = new ArrayList();
+        
+        String fileName = "features_yaniv_" + starting + "_to_"+ finishing +".csv";
+        System.out.println("writing to file : " + fileName);
+        int numLinesToIgnore = starting - 1;
+        String friendsFileName = "yaniv_friends.csv";
+        try {
+            String line = null;
+            
+            // FileReader reads text files in the default encoding.
+            FileReader fileReader = new FileReader(friendsFileName);
+
+            // Always wrap FileReader in BufferedReader.
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            System.out.println("ignoring " + numLinesToIgnore + " lines in friends file.");
+            while(numLinesToIgnore != 0) {
+                 line = bufferedReader.readLine();
+                 numLinesToIgnore--;
+                 if (line == null) {
+                     break;
+                 }
+            }
+            
+            for (int i=0; i<friendsPerRun; i++) {
+                line = bufferedReader.readLine();
+                if (line == null) {
+                    break;
+                }
+                String delims = "[,]";
+                String[] tokens = line.split(delims);
+                profiles.add(tokens[0]); // 0 is ID, 1 is name
+            }
+
+            // Always close files.
+            bufferedReader.close();			
+        }
+        catch(FileNotFoundException ex) {
+            System.out.println(
+                "Unable to open file '" + 
+                friendsFileName + "'");				
+        }
+        catch(IOException ex) {
+            System.out.println(
+                "Error reading file '" 
+                + friendsFileName + "'");					
+            // Or we could just do this: 
+            // ex.printStackTrace();
+        }
+        System.out.println("running stats for " + profiles);        
+        extractor.setProfileIds(profiles);
+        
+        extractor.addParameter(PropertyFriendTaggedMePhoto.class, "tagAmount", "20");
+        extractor.addParameter(PropertyMeTaggedFriendPhoto.class, "tagAmount", "20");
+        extractor.addParameter(PropertyPrivateMessages.class, "timePeriod", "20");
+        extractor.addParameter(PropertyFriendTaggedUserInPost.class, "tagAmount", "20");
+        extractor.addParameter(PropertyUserTaggedFriendInPost.class, "tagAmount", "20");
+        
+        DebugUtility.setDebug(false);
+        System.out.println("extracting..");  
+        extractor.extract();
+        extractor.printToConsole();
+        System.out.println("finished. saving to " + fileName);
+        extractor.saveToCSVFile(fileName);
         System.out.println("file saved.");
     }
 }
