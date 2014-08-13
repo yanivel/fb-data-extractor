@@ -24,13 +24,15 @@ import java.util.Map;
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
 public class FacebookUtility {
-    static protected String facebookAccessToken = "CAACEdEose0cBAC1foIY8KxJ4yQk8AgqzKRB5sSKHVG47G4aqFx4awQkoR4kZACPRPEuvofvUMch1mZB3y55Fo5ZBURwagBuQbgAVSPs3RSzZAEmXMIEaE9hU3nvzFeijzeyxKchbCyzPhyE7SqcB1Tqln08krxawOkxZCZAo0YdkaWdZAVn0wbNLp8qe1RuwJ6XR9XjXySVNgZDZD";
+    static protected String facebookAccessToken = "CAACEdEose0cBAErcHWyvN6WRV87vBnz2dbSE47mmVKjA6mjZB7NzWWYh4YJToug9oQIdN0retvS4O35vq60T9rZBHLqoEP39m8DDNFjxNAM81GerfZCzzyNUeMwTyEpM7xeE3wFFc6IXqDXBOCZCt6tmd8T2cwKBdZBUt60aNtEAGl16Y2UZA7HOvTDt67GCmRRDOL5wuWBgZDZD";
     
     static protected FacebookClient facebookClient = null;
     
     private FacebookUtility() {
     
     }
+    
+    
     
     public static String getAccessToken() {
         return FacebookUtility.facebookAccessToken;

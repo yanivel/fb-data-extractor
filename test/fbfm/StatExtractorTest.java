@@ -12,6 +12,7 @@ import fbfm.stats.properties.PropertyMeTaggedFriendPhoto;
 import fbfm.stats.properties.PropertyPrivateMessages;
 import fbfm.stats.properties.PropertyUserTaggedFriendInPost;
 import fbfm.util.DebugUtility;
+import fbfm.util.FacebookUtility;
 import fbfm.util.StatUtility;
 import java.io.BufferedReader;
 import java.io.File;
@@ -176,7 +177,7 @@ public class StatExtractorTest {
     /**
      * Test of extract method, of class StatExtractor.
      */
-    //@Test
+    @Test
     //deprecated
     public void testExtractFriendsProperties() {
         
@@ -262,7 +263,7 @@ public class StatExtractorTest {
     /**
      * Test of extract method, of class StatExtractor.
      */
-    @Test
+    //@Test
     public void testExtractFeatures() {
         int starting = 701;
         int friendsPerRun = 100;
