@@ -20,10 +20,14 @@ import java.util.Map;
 
 
 /**
+ * The facebook utility where you can get a token from and other functions
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
 public class FacebookUtility {
+    
+    
+    // this is the token - needs to be updated manually unless you implement a way to get one as a user :)
     static protected String facebookAccessToken = "CAACEdEose0cBAErcHWyvN6WRV87vBnz2dbSE47mmVKjA6mjZB7NzWWYh4YJToug9oQIdN0retvS4O35vq60T9rZBHLqoEP39m8DDNFjxNAM81GerfZCzzyNUeMwTyEpM7xeE3wFFc6IXqDXBOCZCt6tmd8T2cwKBdZBUt60aNtEAGl16Y2UZA7HOvTDt67GCmRRDOL5wuWBgZDZD";
     
     static protected FacebookClient facebookClient = null;
@@ -31,8 +35,6 @@ public class FacebookUtility {
     private FacebookUtility() {
     
     }
-    
-    
     
     public static String getAccessToken() {
         return FacebookUtility.facebookAccessToken;
@@ -46,6 +48,13 @@ public class FacebookUtility {
         return FacebookUtility.facebookClient;
     }
     
+    /**
+     * 
+     * get the current user's friends into a csv file
+     * 
+     * @param filename
+     * @return number of friends
+     */
     public static int AllFriendsToCSV(String filename) {
         FacebookClient client = FacebookUtility.getFacebookClient();
         

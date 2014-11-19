@@ -42,18 +42,27 @@ public class StatUtility {
         }
     }
     
+    /**
+     * @return a set of available stat classes
+     */
     static public Set<Class<?>> getAvailableStats() {
         StatUtility.buildStatCollection();
         
         return Sets.union(StatUtility.getAvailableFeatures(), StatUtility.getAvailableProperties()).immutableCopy();
     }
     
+    /**
+     * @return a set of available property classes
+     */
     static public Set<Class<?>> getAvailableProperties() {
         StatUtility.buildStatCollection();
         
         return stats.get(StatType.PROPERTY);
     }
     
+    /**
+     * @return a set of available features classes
+     */
     static public Set<Class<?>> getAvailableFeatures() {
         StatUtility.buildStatCollection();
         

@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package fbfm;
 
 import com.google.common.collect.Range;
 
 /**
- * Contain the a Stat value including the range and type {@link StatValueType}
+ * Contain the a Stat value including the range
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  * @param <T> should be Integer/Long or Float/Double
  */

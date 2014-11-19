@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * Cache singleton utility to cache results got from facebook
+ * can store a cache for different users in a table like manner columns, row value
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
@@ -40,6 +42,12 @@ public class CacheUtility {
         }
     }
     
+    /**
+     * adds a user cache
+     * 
+     * @param userId
+     * @param cacheName 
+     */
     public void addUserCache(String userId, String cacheName) {
 
         Map<String, Table<Object, Object, Object>> cache = new HashMap<>();
@@ -50,6 +58,15 @@ public class CacheUtility {
         
     }
     
+    /**
+     * adds data to a user cache, will create the cache if it doesn't exist
+     * 
+     * @param userId
+     * @param cacheName
+     * @param r row
+     * @param c column
+     * @param v value
+     */
     public void addUserCacheData(String userId, String cacheName, Object r, Object c, Object v)
     {
        
@@ -65,6 +82,14 @@ public class CacheUtility {
         map.get(cacheName).put(r, c, v);
     }
     
+    /**
+     * get the data at a given user's cache and row
+     * 
+     * @param userId
+     * @param cacheName
+     * @param r
+     * @return Map<Object,Object> 
+     */
     public Map<Object,Object> getCacheData(String userId, String cacheName, Object r)
     {
     
@@ -79,11 +104,25 @@ public class CacheUtility {
         return returnValue;
     }
     
-    
+    /**
+     * user has cache?
+     * 
+     * @param userId
+     * @param cacheName
+     * @return true if user has a cache
+     */
     public boolean hasCacheData(String userId, String cacheName) {
         return  (this.userCaches.containsKey(userId) && this.userCaches.get(userId).containsKey(cacheName));
     }
     
+    /**
+     * has cache data in row
+     * 
+     * @param userId
+     * @param cacheName
+     * @param r
+     * @return true if user has cache data in row 
+     */
     public boolean hasCacheData(String userId, String cacheName, Object r) {
 
         if (this.userCaches.containsKey(userId)) {

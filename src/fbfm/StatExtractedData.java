@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * a structure to save the extracted stat data from facebook of a user
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
@@ -31,11 +32,23 @@ public class StatExtractedData {
         this.userId = userId;
     }
     
+    /**
+     * add data explicitly by specifcing the user, stat name and its value
+     * 
+     * @param profileId
+     * @param statName
+     * @param statValue 
+     */
     public void addData(String profileId, String statName, String statValue) 
     {
         this.data.put(profileId, statName, statValue);
     }
     
+    /**
+     * add data from a StatResponse instance
+     * 
+     * @param statResponse 
+     */
     public void addData(StatResponse statResponse) 
     {
         Set<String> keys = statResponse.getKeys();

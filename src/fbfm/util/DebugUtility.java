@@ -7,7 +7,8 @@
 package fbfm.util;
 
 /**
- *
+ * Debug utility.. 
+ * 
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
 public class DebugUtility {

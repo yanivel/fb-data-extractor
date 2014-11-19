@@ -22,6 +22,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * 
+ * This is the "main" gun, use this to extract stats and print to string or save to csv
+ * set a specific user, add profiles and stats with properties and run extract.
+ * you can also set a timeout (which is needed since facebook will give us an error!)
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
  */
@@ -40,6 +44,7 @@ public class StatExtractor {
     // timeout between calls to facebook in milliseconds
     protected int timeout = 0;
     
+    // all the data will be saved as StatExtractedData
     protected StatExtractedData statData;
     
     
@@ -117,16 +122,29 @@ public class StatExtractor {
         }
     }
     
+    /**
+     * add stats to the extractor
+     * 
+     * @param stats 
+     */
     public void addStats(Set<Class<?>> stats) {
         this.stats = Sets.union(this.stats, stats).immutableCopy();
     }
     
-    // replaces stats
+    /**
+     * set the stats in the extractor, will replace the existing stats
+     * 
+     * @param stats 
+     */
     public void setStats(Set<Class<?>> stats) {
         this.stats = stats;
     }
     
-    
+    /**
+     * use this to do the actual data extraction from facebook. will be saved into statData property.
+     * 
+     * @return true on success, false otherwise
+     */
     public boolean extract()
     {
         this.statData = new StatExtractedData(this.userId);
@@ -151,9 +169,8 @@ public class StatExtractor {
                     this.statData.addData(result);
                     // sleep for time out
                     Thread.sleep(this.timeout);
-                } catch (Exception e) { // change to approprtiate errors
+                } catch (Exception e) { 
                     e.printStackTrace();
-                    // TODO: need here something??
                 }
             }
             System.out.println("finished results for "+profileId);
@@ -162,7 +179,13 @@ public class StatExtractor {
         return true;
     }
     
-    
+    /**
+     * saves the extracted data to a csv filename
+     * need to run extract first.
+     * 
+     * @param filename
+     * @return true on success, false otherwise
+     */
     public boolean saveToCSVFile(String filename)
     {
         Table<String, String, String> table = this.statData.getDataTable();
@@ -181,8 +204,6 @@ public class StatExtractor {
             writer.append('\n');
             
             // print all the features/properties (traits)
-	    
-	    
 	    for (String profileId : this.profileIds) {
                 writer.append(this.userId + ',');
                 writer.append(profileId);
@@ -206,6 +227,13 @@ public class StatExtractor {
         return true;
     }
     
+    /**
+     * saves the extracted data to the console.
+     * need to run extract first.
+     * 
+     * @param filename
+     * @return true on success, false otherwise
+     */
     public boolean printToConsole()
     {
         System.out.println(this.statData);

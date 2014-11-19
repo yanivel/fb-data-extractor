@@ -10,8 +10,10 @@ import java.io.File;
 import java.io.FileFilter;
 
 /**
+ * Can implement this to automatically combine files
  *
  * @author Yaniv Elimor <yaniv.elimor at gmail.com>
+ * @deprecated
  */
 public class CSVUtility {
     private CSVUtility() {
